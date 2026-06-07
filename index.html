@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Athlete OS">
+<meta name="theme-color" content="#080c0a">
+<title>Athlete OS — Phase 3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c0a;
+  --surface: #0f1611;
+  --surface2: #161e18;
+  --border: #1e2b21;
+  --volt: #c8ff20;
+  --volt-dim: rgba(200,255,32,0.12);
+  --red: #ff4040;
+  --red-dim: rgba(255,64,64,0.12);
+  --blue: #00d4ff;
+  --blue-dim: rgba(0,212,255,0.12);
+  --pink: #ff2d7a;
+  --pink-dim: rgba(255,45,122,0.12);
+  --amber: #ffb020;
+  --amber-dim: rgba(255,176,32,0.12);
+  --text: #eef2ed;
+  --muted: #6b7d6e;
+  --nav-h: 72px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── SCREENS ── */
+.screen {
+  position: fixed; inset: 0;
+  overflow-y: auto;
+  padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 20px);
+  opacity: 0; pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+/* ── BOTTOM NAV ── */
+.nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(var(--nav-h) + var(--safe-bottom));
+  background: rgba(8,12,10,0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-around;
+  padding-top: 8px;
+  z-index: 100;
+}
+.nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+  padding: 4px 12px; cursor: pointer; transition: color .2s;
+  letter-spacing: 0.3px; text-transform: uppercase;
+}
+.nav-btn svg { width: 22px; height: 22px; transition: transform .2s; }
+.nav-btn.active { color: var(--volt); }
+.nav-btn.active svg { transform: scale(1.1); }
+
+/* ── HOME SCREEN ── */
+.home-header {
+  padding: 56px 20px 20px;
+  background: linear-gradient(180deg, rgba(200,255,32,0.04) 0%, transparent 100%);
+}
+.phase-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--volt-dim); border: 1px solid rgba(200,255,32,0.2);
+  color: var(--volt); font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.home-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px; line-height: .95; letter-spacing: 1px;
+  color: var(--text); margin-bottom: 6px;
+}
+.home-title span { color: var(--volt); }
+.home-sub { font-size: 13px; color: var(--muted); font-weight: 400; }
+
+/* Progress Ring */
+.ring-section {
+  display: flex; justify-content: center; align-items: center;
+  padding: 28px 20px 8px; gap: 28px;
+}
+.ring-wrap { position: relative; width: 130px; height: 130px; flex-shrink: 0; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.ring-pct {
+  font-family: 'Bebas Neue', sans-serif; font-size: 38px;
+  color: var(--volt); line-height: 1;
+}
+.ring-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.ring-stats { display: flex; flex-direction: column; gap: 14px; }
+.ring-stat-item { display: flex; flex-direction: column; gap: 2px; }
+.ring-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; line-height: 1; }
+.ring-stat-key { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+
+/* Coach Tip */
+.coach-tip {
+  margin: 8px 16px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--volt);
+  border-radius: 12px; padding: 14px 16px;
+}
+.coach-tip-label {
+  font-size: 10px; color: var(--volt); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.coach-tip-text { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+/* Day Cards */
+.section-label {
+  font-size: 11px; color: var(--muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .8px;
+  padding: 20px 20px 10px;
+}
+.day-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.day-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; display: flex;
+  align-items: center; gap: 14px; cursor: pointer;
+  transition: transform .15s, border-color .15s, background .15s;
+  position: relative; overflow: hidden;
+}
+.day-card:active { transform: scale(0.98); }
+.day-card.active-day { border-color: var(--volt); background: rgba(200,255,32,0.03); }
+.day-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 36px;
+  color: var(--border); line-height: 1; flex-shrink: 0; width: 36px;
+  transition: color .2s;
+}
+.day-card.active-day .day-num { color: var(--volt); }
+.day-info { flex: 1; }
+.day-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: .5px; line-height: 1.1; }
+.day-target { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.day-pill {
+  font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  text-transform: uppercase; letter-spacing: .3px; flex-shrink: 0;
+}
+.day-progress-bar {
+  position: absolute; bottom: 0; left: 0;
+  height: 2px; background: var(--volt);
+  transition: width .4s ease;
+}
+.day-check {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2); flex-shrink: 0;
+  font-size: 14px;
+}
+
+/* Recovery Cards */
+.recovery-grid { padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.rec-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 12px;
+}
+.rec-icon { font-size: 22px; margin-bottom: 6px; }
+.rec-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.rec-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+/* ── WORKOUT SCREEN ── */
+.workout-header {
+  padding: 52px 20px 16px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.workout-header-left { flex: 1; }
+.back-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500; padding: 8px 14px;
+  border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px;
+}
+.workout-day-chip {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--muted); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.workout-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 36px;
+  letter-spacing: .5px; line-height: 1;
+}
+.workout-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* Warmup */
+.warmup-strip {
+  margin: 0 16px 16px;
+  background: var(--volt-dim); border: 1px solid rgba(200,255,32,0.2);
+  border-radius: 12px; overflow: hidden;
+}
+.warmup-toggle {
+  width: 100%; background: none; border: none; color: var(--volt);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 12px 16px; text-align: left; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.warmup-body { display: none; padding: 0 16px 14px; }
+.warmup-body.open { display: block; }
+.warmup-item { font-size: 12px; color: var(--muted); padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.4; }
+.warmup-item:last-child { border-bottom: none; }
+.warmup-item strong { color: var(--volt); display: block; font-size: 12px; }
+
+/* Exercise Cards */
+.exercises-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.superset-label {
+  font-size: 10px; font-weight: 700; color: var(--volt);
+  text-transform: uppercase; letter-spacing: .5px;
+  padding: 8px 0 4px; display: flex; align-items: center; gap: 6px;
+}
+
+.ex-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+  transition: border-color .2s;
+}
+.ex-card.done { border-color: var(--volt); opacity: .75; }
+.ex-card.done-abs { border-color: var(--blue); opacity: .75; }
+.ex-card.done-cardio { border-color: var(--pink); opacity: .75; }
+
+.ex-tap-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; cursor: pointer;
+}
+.ex-check-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s; background: var(--surface2);
+}
+.ex-card.done .ex-check-circle { background: var(--volt); border-color: var(--volt); }
+.ex-card.done-abs .ex-check-circle { background: var(--blue); border-color: var(--blue); }
+.ex-card.done-cardio .ex-check-circle { background: var(--pink); border-color: var(--pink); }
+.ex-check-circle svg { opacity: 0; transition: opacity .2s; }
+.ex-card.done .ex-check-circle svg,
+.ex-card.done-abs .ex-check-circle svg,
+.ex-card.done-cardio .ex-check-circle svg { opacity: 1; }
+
+.ex-main { flex: 1; }
+.ex-name { font-size: 15px; font-weight: 600; line-height: 1.2; }
+.ex-sets { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.ex-expand-icon { color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+.ex-card.expanded .ex-expand-icon { transform: rotate(180deg); }
+
+.ex-detail {
+  display: none; padding: 0 16px 16px;
+  border-top: 1px solid var(--border);
+}
+.ex-card.expanded .ex-detail { display: block; }
+.ex-note {
+  font-size: 12px; color: var(--muted); line-height: 1.5;
+  padding: 10px 0 12px;
+}
+.ex-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px; margin-right: 5px; margin-bottom: 5px;
+  text-transform: uppercase; letter-spacing: .3px;
+}
+.badge-power { background: var(--red-dim); color: var(--red); }
+.badge-hyp { background: var(--volt-dim); color: var(--volt); }
+.badge-core { background: var(--blue-dim); color: var(--blue); }
+.badge-cardio { background: var(--pink-dim); color: var(--pink); }
+.badge-neutral { background: var(--surface2); color: var(--muted); }
+
+/* Weight Logger */
+.weight-logger { margin-top: 10px; }
+.weight-logger-label { font-size: 10px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: .5px; margin-bottom: 6px; font-weight: 600; }
+.weight-inputs { display: flex; gap: 6px; }
+.weight-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 600; padding: 10px 6px;
+  border-radius: 8px; text-align: center;
+  -webkit-appearance: none; appearance: none;
+}
+.weight-input:focus { outline: none; border-color: var(--volt); }
+.weight-input::placeholder { color: var(--border); font-size: 11px; font-weight: 400; }
+
+/* Superset block */
+.ss-block {
+  border: 1px dashed var(--border); border-radius: 14px;
+  overflow: hidden; background: rgba(200,255,32,0.01);
+}
+.ss-header {
+  padding: 10px 14px 4px;
+  font-size: 10px; font-weight: 700; color: var(--volt);
+  text-transform: uppercase; letter-spacing: .5px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ss-block .ex-card { border-radius: 0; border: none; border-bottom: 1px solid var(--border); }
+.ss-block .ex-card:last-child { border-bottom: none; }
+
+/* Cardio / Core blocks */
+.special-block {
+  border-radius: 14px; overflow: hidden;
+}
+.special-block.core { border: 1px dashed var(--blue); background: var(--blue-dim); }
+.special-block.cardio { border: 1px dashed var(--pink); background: var(--pink-dim); }
+.special-header {
+  padding: 10px 14px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .5px;
+  display: flex; align-items: center; gap: 6px;
+}
+.core .special-header { color: var(--blue); }
+.cardio .special-header { color: var(--pink); }
+.special-block .ex-card { border-radius: 0; border: none; background: transparent; }
+
+/* Workout done banner */
+.done-banner {
+  margin: 16px 16px 0;
+  background: var(--volt-dim); border: 1px solid rgba(200,255,32,0.3);
+  border-radius: 14px; padding: 16px; text-align: center; display: none;
+}
+.done-banner-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--volt); }
+.done-banner-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* ── AUTO-REG SCREEN ── */
+.autoreg-header {
+  padding: 52px 20px 20px;
+}
+.autoreg-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: .5px; line-height: 1;
+  margin-bottom: 6px;
+}
+.autoreg-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.check-section { padding: 0 16px 16px; }
+.check-label {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px;
+}
+.check-options { display: flex; flex-direction: column; gap: 8px; }
+.check-opt {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 12px; padding: 14px 16px; cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+  transition: border-color .2s, background .2s;
+}
+.check-opt.selected { border-color: var(--volt); background: var(--volt-dim); }
+.check-opt-dot {
+  width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+}
+.check-opt-text { flex: 1; }
+.check-opt-title { font-size: 14px; font-weight: 600; }
+.check-opt-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.check-opt-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; flex-shrink: 0; }
+
+.calc-btn {
+  margin: 4px 16px 20px;
+  width: calc(100% - 32px);
+  background: var(--volt); color: #080c0a;
+  border: none; font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 1px; padding: 16px;
+  border-radius: 12px; cursor: pointer; transition: opacity .2s;
+}
+.calc-btn:active { opacity: .85; }
+
+.result-card {
+  margin: 0 16px 16px;
+  border-radius: 14px; padding: 20px; display: none;
+  border-left: 4px solid var(--volt);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.result-card.visible { display: block; }
+.result-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+  margin-bottom: 8px;
+}
+.result-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+/* ── MINDSET SCREEN ── */
+.mindset-header { padding: 52px 20px 16px; }
+.mindset-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 36px;
+  letter-spacing: .5px; line-height: 1; margin-bottom: 6px;
+}
+.mindset-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+.m-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px;
+}
+.m-card-title { font-size: 15px; font-weight: 600; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px; }
+.m-card-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.m-card-body strong { color: var(--text); }
+.m-card-body p { margin-bottom: 8px; }
+.m-card-body p:last-child { margin-bottom: 0; }
+.m-vs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.m-vs-item { background: var(--surface2); border-radius: 10px; padding: 12px; }
+.m-vs-label { font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; margin-bottom: 6px; }
+.m-vs-item.fail .m-vs-label { color: var(--red); }
+.m-vs-item.win .m-vs-label { color: var(--volt); }
+.m-vs-text { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+/* Nutrition cards */
+.nutr-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; margin: 0 16px 10px;
+}
+.nutr-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.nutr-icon { font-size: 24px; }
+.nutr-name { font-size: 14px; font-weight: 600; }
+.nutr-hack { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.nutr-hack strong { color: var(--text); }
+
+/* ── PDF PRINT ── */
+@media print {
+  body { background: white !important; color: black !important; overflow: auto !important; }
+  .nav, .back-btn, .warmup-toggle + .warmup-body, .ex-expand-icon,
+  .weight-logger, .done-banner, .phase-chip { display: none !important; }
+  .screen { position: static !important; opacity: 1 !important; pointer-events: all !important;
+    transform: none !important; overflow: visible !important; padding: 0 !important; }
+  .screen:not(#screen-home):not(#screen-workout) { display: none !important; }
+  #screen-workout { display: block !important; }
+  .workout-header { padding: 10px 10px 8px !important; }
+  .ex-card { border: 1px solid #ccc !important; background: white !important; break-inside: avoid; }
+  .ex-detail { display: block !important; }
+  .ex-card { border-radius: 4px !important; }
+  * { color: black !important; background: white !important; }
+  .ex-name { font-size: 13px !important; }
+  .ex-note { font-size: 11px !important; }
+}
+
+/* Utility */
+.spacer { height: 16px; }
+.mt-4 { margin-top: 4px; }
+.text-volt { color: var(--volt); }
+.text-blue { color: var(--blue); }
+.text-pink { color: var(--pink); }
+.text-red { color: var(--red); }
+.text-amber { color: var(--amber); }
+
+/* Pulse animation for active day */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(200,255,32,0.3); }
+  70% { box-shadow: 0 0 0 8px rgba(200,255,32,0); }
+  100% { box-shadow: 0 0 0 0 rgba(200,255,32,0); }
+}
+.day-card.active-day { animation: pulse-ring 2s ease-out 1; }
+
+/* Slide in from right for workout */
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.workout-anim { animation: slide-in-right .25s ease; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1: HOME
+════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="home-header">
+    <div class="phase-chip">⚡ Phase 3.0</div>
+    <div class="home-title">Athlete<br><span>OS</span></div>
+    <div class="home-sub">The Athletic Pivot — Train Smart, Recover Faster</div>
+  </div>
+
+  <div class="ring-section">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 130 130" width="130" height="130">
+        <circle cx="65" cy="65" r="54" fill="none" stroke="#1e2b21" stroke-width="10"/>
+        <circle id="progress-ring" cx="65" cy="65" r="54" fill="none"
+          stroke="#c8ff20" stroke-width="10" stroke-linecap="round"
+          stroke-dasharray="339.3" stroke-dashoffset="339.3"
+          style="transition: stroke-dashoffset .6s ease;"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="ring-pct">0%</div>
+        <div class="ring-label">Week</div>
+      </div>
+    </div>
+    <div class="ring-stats">
+      <div class="ring-stat-item">
+        <div class="ring-stat-val text-volt" id="stat-done">0 / 4</div>
+        <div class="ring-stat-key">Days Done</div>
+      </div>
+      <div class="ring-stat-item">
+        <div class="ring-stat-val" style="color:#6b7d6e">1–2 RIR</div>
+        <div class="ring-stat-key">Recovery Rule</div>
+      </div>
+      <div class="ring-stat-item">
+        <div class="ring-stat-val" style="color:#6b7d6e">8–10k</div>
+        <div class="ring-stat-key">Steps / Day</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="coach-tip">
+    <div class="coach-tip-label">🧠 Coach's Note</div>
+    <div class="coach-tip-text" id="coach-tip-text">Loading today's insight...</div>
+  </div>
+
+  <div class="section-label">Your 4-Day Split</div>
+  <div class="day-cards">
+    <div class="day-card active-day" id="home-day-1" onclick="openWorkout(1)">
+      <div class="day-num">1</div>
+      <div class="day-info">
+        <div class="day-name">Upper Power</div>
+        <div class="day-target">Chest · Back · Shoulders · Arms</div>
+      </div>
+      <div class="day-pill" style="background:var(--red-dim);color:var(--red);">Heavy</div>
+      <div class="day-check" id="check-1">—</div>
+      <div class="day-progress-bar" id="bar-1" style="width:0%"></div>
+    </div>
+    <div class="day-card" id="home-day-2" onclick="openWorkout(2)">
+      <div class="day-num">2</div>
+      <div class="day-info">
+        <div class="day-name">Lower Speed</div>
+        <div class="day-target">Quads · Hamstrings · Glutes · Calves</div>
+      </div>
+      <div class="day-pill" style="background:var(--amber-dim);color:var(--amber);">Drive</div>
+      <div class="day-check" id="check-2">—</div>
+      <div class="day-progress-bar" id="bar-2" style="width:0%"></div>
+    </div>
+    <div class="day-card" id="home-day-3" onclick="openWorkout(3)">
+      <div class="day-num">3</div>
+      <div class="day-info">
+        <div class="day-name">Upper Volume</div>
+        <div class="day-target">Chest · Back · Shoulders · Arms</div>
+      </div>
+      <div class="day-pill" style="background:var(--volt-dim);color:var(--volt);">Pump</div>
+      <div class="day-check" id="check-3">—</div>
+      <div class="day-progress-bar" id="bar-3" style="width:0%"></div>
+    </div>
+    <div class="day-card" id="home-day-4" onclick="openWorkout(4)">
+      <div class="day-num">4</div>
+      <div class="day-info">
+        <div class="day-name">Home Crucible</div>
+        <div class="day-target">100% Bodyweight — Train with your kid 🏡</div>
+      </div>
+      <div class="day-pill" style="background:var(--blue-dim);color:var(--blue);">Play</div>
+      <div class="day-check" id="check-4">—</div>
+      <div class="day-progress-bar" id="bar-4" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Recovery Protocols</div>
+  <div class="recovery-grid">
+    <div class="rec-card">
+      <div class="rec-icon">🧠</div>
+      <div class="rec-title text-volt">Creatine</div>
+      <div class="rec-desc">5g daily. Clears brain fog under sleep deprivation.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon">🌙</div>
+      <div class="rec-title text-blue">Magnesium</div>
+      <div class="rec-desc">200–400mg Bisglycinate, 45 min before bed.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon">🥩</div>
+      <div class="rec-title text-amber">Protein Anchor</div>
+      <div class="rec-desc">20–30g fast protein before touching any sugar craving.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon">🧂</div>
+      <div class="rec-title text-pink">Adrenal Salt</div>
+      <div class="rec-desc">Warm water + sea salt pinch when dragging. Kills cravings.</div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <div style="text-align:center; padding: 8px 16px;">
+    <button onclick="resetAllState()" style="background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 20px;border-radius:20px;cursor:pointer;">
+      Reset Week Tracker
+    </button>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2: WORKOUT (dynamically filled)
+════════════════════════════════════════ -->
+<div id="screen-workout" class="screen">
+  <div id="workout-content"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3: AUTO-REG
+════════════════════════════════════════ -->
+<div id="screen-autoreg" class="screen">
+  <div class="autoreg-header">
+    <div class="autoreg-title">Ready-State<br>Check-In</div>
+    <div class="autoreg-sub">Answer 3 questions. Get your training intensity for today.</div>
+  </div>
+
+  <!-- Sleep -->
+  <div class="check-section">
+    <div class="check-label">💤 Sleep Quality</div>
+    <div class="check-options" id="sleep-opts">
+      <div class="check-opt selected" data-group="sleep" data-val="3" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--volt)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Excellent</div>
+          <div class="check-opt-sub">7+ hours, deep sleep</div>
+        </div>
+        <div class="check-opt-val text-volt">3</div>
+      </div>
+      <div class="check-opt" data-group="sleep" data-val="2" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--amber)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Average</div>
+          <div class="check-opt-sub">5–6 hours, woke once</div>
+        </div>
+        <div class="check-opt-val text-amber">2</div>
+      </div>
+      <div class="check-opt" data-group="sleep" data-val="1" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--red)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Poor</div>
+          <div class="check-opt-sub">Interrupted, under 5 hours</div>
+        </div>
+        <div class="check-opt-val text-red">1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Soreness -->
+  <div class="check-section">
+    <div class="check-label">💪 Muscle Soreness</div>
+    <div class="check-options" id="sore-opts">
+      <div class="check-opt selected" data-group="sore" data-val="3" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--volt)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Fresh</div>
+          <div class="check-opt-sub">Energized, ready to lift</div>
+        </div>
+        <div class="check-opt-val text-volt">3</div>
+      </div>
+      <div class="check-opt" data-group="sore" data-val="2" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--amber)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Moderately Sore</div>
+          <div class="check-opt-sub">Feel previous workout, but mobile</div>
+        </div>
+        <div class="check-opt-val text-amber">2</div>
+      </div>
+      <div class="check-opt" data-group="sore" data-val="1" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--red)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Wrecked</div>
+          <div class="check-opt-sub">Fatigued, lower back stiff</div>
+        </div>
+        <div class="check-opt-val text-red">1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Motivation -->
+  <div class="check-section">
+    <div class="check-label">🔥 Mental Drive</div>
+    <div class="check-options" id="mot-opts">
+      <div class="check-opt selected" data-group="mot" data-val="3" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--volt)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Hyped</div>
+          <div class="check-opt-sub">Fired up, let's go</div>
+        </div>
+        <div class="check-opt-val text-volt">3</div>
+      </div>
+      <div class="check-opt" data-group="mot" data-val="2" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--amber)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Disciplined</div>
+          <div class="check-opt-sub">Tired but ready to do the work</div>
+        </div>
+        <div class="check-opt-val text-amber">2</div>
+      </div>
+      <div class="check-opt" data-group="mot" data-val="1" onclick="selectOpt(this)">
+        <div class="check-opt-dot" style="background:var(--red)"></div>
+        <div class="check-opt-text">
+          <div class="check-opt-title">Drained</div>
+          <div class="check-opt-sub">Dragging feet, high stress</div>
+        </div>
+        <div class="check-opt-val text-red">1</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcReadyState()">Generate Today's Intensity →</button>
+
+  <div class="result-card" id="result-card">
+    <div class="result-title" id="result-title"></div>
+    <div class="result-desc" id="result-desc"></div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 4: MINDSET
+════════════════════════════════════════ -->
+<div id="screen-mindset" class="screen">
+  <div class="mindset-header">
+    <div class="mindset-title">🧠 Mindset &<br>Nutrition</div>
+  </div>
+
+  <div class="mindset-cards">
+    <div class="m-card">
+      <div class="m-card-title">🚨 The Scale Weight Trap</div>
+      <div class="m-card-body">
+        <p>When you overtrain (5 AM + going to failure + psychological stress), your adrenals flood your body with <strong>cortisol</strong>.</p>
+        <p>High cortisol triggers aldosterone, signalling your kidneys to <strong>retain water and sodium</strong>. This sits on your midsection and throws your scale off by <strong>5–8 lbs overnight</strong>.</p>
+        <p>You didn't gain fat — you're holding stress water. The new plan flushes it.</p>
+      </div>
+      <div class="m-vs">
+        <div class="m-vs-item fail">
+          <div class="m-vs-label">❌ Dieter's Trap</div>
+          <div class="m-vs-text">Burn 600 cals, train to failure, eat as little as possible. Spikes cortisol, locks fat in place.</div>
+        </div>
+        <div class="m-vs-item win">
+          <div class="m-vs-label">✅ Athlete OS</div>
+          <div class="m-vs-text">Move explosively, leave 2 reps in reserve, recover fast. Lowers cortisol, flushes water, builds muscle.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-card">
+      <div class="m-card-title">💤 The Sleep Override Rule</div>
+      <div class="m-card-body">
+        <p>An exhausted brain spikes <strong>Ghrelin</strong> (hunger hormone) and tanks <strong>Leptin</strong> (fullness hormone). Your brain hijacks willpower to demand fat + sugar.</p>
+        <p>This is biology, not weakness. <strong>Sleep is the training session.</strong> Forcing your body awake on 5 hours under heavy work stress creates systemic crash.</p>
+        <p>When sleep is ≤5 hours and stress is high: <strong>skip the workout, protect the sleep.</strong></p>
+      </div>
+    </div>
+
+    <div class="m-card">
+      <div class="m-card-title">🌬️ The Vagal Reset (4-7-8)</div>
+      <div class="m-card-body">
+        <p>This manually flips your nervous system from <strong>Fight or Flight → Rest and Digest</strong>.</p>
+        <p><strong>Inhale</strong> for 4 seconds → <strong>Hold</strong> for 7 seconds → <strong>Exhale</strong> for 8 seconds.</p>
+        <p>Combine with Wind-Relieving Yoga Flow (pull knees to chest). Do morning and night. Kills bloat and cortisol water.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="padding-top:20px;">Nutrition Protocols</div>
+
+  <div class="nutr-card">
+    <div class="nutr-top"><div class="nutr-icon">🧠</div><div class="nutr-name text-volt">Brain-Fog Shield (Creatine)</div></div>
+    <div class="nutr-hack"><strong>5g Creatine Monohydrate daily</strong>, regardless of training. Protects brain's cellular energy under cognitive sprints.</div>
+  </div>
+  <div class="nutr-card">
+    <div class="nutr-top"><div class="nutr-icon">🌙</div><div class="nutr-name text-blue">Magnesium Sleep Anchor</div></div>
+    <div class="nutr-hack"><strong>200–400mg Magnesium Bisglycinate</strong>, 45 min before bed. Calms CNS, promotes deep sleep, relieves gut bloating.</div>
+  </div>
+  <div class="nutr-card">
+    <div class="nutr-top"><div class="nutr-icon">🥩</div><div class="nutr-name text-amber">15-Minute Protein Anchor</div></div>
+    <div class="nutr-hack">Craving sugar? Eat <strong>20–30g fast protein</strong> (shake, cottage cheese, turkey) and wait 15 min. Shuts down Ghrelin before you touch the treat.</div>
+  </div>
+  <div class="nutr-card">
+    <div class="nutr-top"><div class="nutr-icon">🧂</div><div class="nutr-name text-pink">Adrenal Salt Fix</div></div>
+    <div class="nutr-hack">Feeling wrecked? Drink <strong>large glass of warm water + heavy pinch of sea salt</strong>. Replaces minerals drained by stress, turns off emergency sugar cravings instantly.</div>
+  </div>
+
+  <div style="padding: 16px; text-align:center;">
+    <button onclick="printWorkout()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 24px;border-radius:12px;cursor:pointer;width:calc(100% - 32px);margin:0 16px;">
+      🖨️ Print / Save as PDF
+    </button>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     BOTTOM NAV
+════════════════════════════════════════ -->
+<nav class="nav">
+  <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    Home
+  </button>
+  <button class="nav-btn" id="nav-workout" onclick="showScreen('workout')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+    </svg>
+    Workout
+  </button>
+  <button class="nav-btn" id="nav-autoreg" onclick="showScreen('autoreg')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+    </svg>
+    Check-In
+  </button>
+  <button class="nav-btn" id="nav-mindset" onclick="showScreen('mindset')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    </svg>
+    Mindset
+  </button>
+</nav>
+
+<script>
+// ══════════════════════════════════════
+// DATA: All 4 workout days
+// ══════════════════════════════════════
+const WORKOUTS = {
+  1: {
+    name: "Upper Power",
+    tag: "Heavy Force",
+    tagColor: "var(--red)",
+    targets: "Chest · Back · Shoulders · Arms",
+    color: "var(--red)",
+    exercises: [
+      {
+        id:"e1-1", type:"main",
+        name:"Bench Press",
+        sets:"3 sets × 5 reps", rest:"Rest 120s",
+        badge:"power", badgeLabel:"Heavy Force",
+        note:"Control the negative, explode up. Leave 2 RIR. This is your anchor lift.",
+        weightSets:3
+      },
+      {
+        id:"ss1a", type:"superset", label:"SUPERSET A",
+        exercises:[
+          { id:"e1-2", name:"Single-Arm DB Row", sets:"3 × 10 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Drive elbow to hip, squeeze lat at top." },
+          { id:"e1-3", name:"Incline DB Press (30°)", sets:"3 × 10 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Rest 60s after 2b. Focus on chest stretch at the bottom." }
+        ]
+      },
+      {
+        id:"ss1b", type:"superset", label:"SUPERSET B — The Arm Pump",
+        exercises:[
+          { id:"e1-4", name:"DB Hammer Curls", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Neutral grip targets brachialis for arm thickness." },
+          { id:"e1-5", name:"Parallel Bar Dips", sets:"3 × Max reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Rest 60s after 3b. Keep shoulders safe — don't dip too deep." }
+        ]
+      },
+      {
+        id:"e1-abs", type:"core",
+        name:"Day 1 Abs Circuit (×3)",
+        sets:"Deadbugs: 12/side · Leg Raises: 15",
+        note:"Keep lower back FLAT on mat the entire time. Rest 45s between rounds."
+      },
+      {
+        id:"e1-cardio", type:"cardio",
+        name:"Zone 2 Aerobic Flush",
+        sets:"15 Minutes · Incline Walk or Bike",
+        note:"Sweat heavily but you can still talk. This flushes stress cortisol water from your body."
+      }
+    ]
+  },
+  2: {
+    name: "Lower Speed",
+    tag: "Posterior Drive",
+    tagColor: "var(--amber)",
+    targets: "Quads · Hamstrings · Glutes · Calves",
+    color: "var(--amber)",
+    exercises: [
+      {
+        id:"e2-1", type:"main",
+        name:"Leg Press (Heavy Tempo)",
+        sets:"3 sets × 8–10 reps", rest:"Rest 120s",
+        badge:"power", badgeLabel:"Heavy Force",
+        note:"3 seconds down, 1 second pause, explosive drive up. Quad destroyer.",
+        weightSets:3
+      },
+      {
+        id:"ss2a", type:"superset", label:"SUPERSET A — Glutes & Hamstrings",
+        exercises:[
+          { id:"e2-2", name:"Dumbbell RDLs", sets:"3 × 10 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Hinge hard at hips. Feel a massive stretch through your glutes and hamstrings." },
+          { id:"e2-3", name:"Standing Calf Raises", sets:"3 × 15 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Rest 60s after 2b. Flex hard at the top, slow on the way down." }
+        ]
+      },
+      {
+        id:"ss2b", type:"superset", label:"SUPERSET B — Unilateral Athleticism",
+        exercises:[
+          { id:"e2-4", name:"DB Box Step-Ups", sets:"3 × 8/leg", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Drive through the heel of the working leg. Full hip extension at the top." },
+          { id:"e2-5", name:"Seated Leg Curls", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Rest 60s after 3b. Focus on the squeeze at full contraction." }
+        ]
+      },
+      {
+        id:"e2-abs", type:"core",
+        name:"Day 2 Abs Circuit (×3)",
+        sets:"Plank Shoulder Taps: 20 · Bird-Dogs: 10/side",
+        note:"No equipment needed. Rest 45s between rounds. Focus entirely on anti-rotation stability."
+      },
+      {
+        id:"e2-cardio", type:"cardio",
+        name:"Zone 2 Aerobic Flush",
+        sets:"15 Minutes · Incline Walk or Bike",
+        note:"On the treadmill or bike post-lift. Flushes metabolic waste out of your legs."
+      }
+    ]
+  },
+  3: {
+    name: "Upper Volume",
+    tag: "Athletic Width",
+    tagColor: "var(--volt)",
+    targets: "Chest · Back · Shoulders · Arms",
+    color: "var(--volt)",
+    exercises: [
+      {
+        id:"e3-1", type:"main",
+        name:"Lat Pulldown",
+        sets:"4 sets × 8 reps", rest:"Rest 90s",
+        badge:"power", badgeLabel:"Width Builder",
+        note:"Squeeze lats downward. Keep chest proud and spine long. 2 RIR.",
+        weightSets:4
+      },
+      {
+        id:"ss3a", type:"superset", label:"SUPERSET A — Posture & Wings",
+        exercises:[
+          { id:"e3-2", name:"DB Incline Fly (30°)", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Wide arc, feel the deep chest stretch. Not a press — fly." },
+          { id:"e3-3", name:"Face Pulls / DB Reverse Fly", sets:"3 × 15 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Rest 60s after 2b. Pull rear delts. Critical for posture under desk stress." }
+        ]
+      },
+      {
+        id:"ss3b", type:"superset", label:"SUPERSET B — Peak & Horseshoe",
+        exercises:[
+          { id:"e3-4", name:"Preacher Curls", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Isolate the bicep peak. Controlled stretch at the bottom." },
+          { id:"e3-5", name:"Overhead Tricep Extension", sets:"3 × 15 reps", badge:"hyp", badgeLabel:"Hypertrophy",
+            note:"Rest 60s after 3b. Deep stretch into the long head for horseshoe shape." }
+        ]
+      },
+      {
+        id:"e3-abs", type:"core",
+        name:"Day 3 Abs Circuit (×3)",
+        sets:"Reverse Crunches: 15 · Hollow Body Hold: 30s",
+        note:"Lying on mat. Rest 45s between rounds. Lower belly compression work."
+      },
+      {
+        id:"e3-cardio", type:"cardio",
+        name:"Zone 2 Aerobic Flush",
+        sets:"15 Minutes · Incline Walk or Bike",
+        note:"Fires up slow-twitch fibers and lowers nervous system tension before you leave."
+      }
+    ]
+  },
+  4: {
+    name: "Home Crucible",
+    tag: "No Equipment",
+    tagColor: "var(--blue)",
+    targets: "100% Bodyweight Conditioning",
+    color: "var(--blue)",
+    intro: "Zero machines. Zero dumbbells. Do this in the living room, backyard, or park with your kid! Complete exercises 1–5 back-to-back. Rest 90s. Repeat for 4 rounds. Let your kid mimic the moves — especially the Bear Crawls. 🐻",
+    exercises: [
+      {
+        id:"e4-1", type:"bw",
+        name:"Air Squats",
+        sets:"4 rounds × 15 reps",
+        note:"Heels flat. Add a hop at the top for explosive variation. Perfect to race your kid."
+      },
+      {
+        id:"e4-2", type:"bw",
+        name:"Lateral Skater Hops",
+        sets:"4 rounds × 10/side",
+        note:"Leap sideways, land softly on one foot, spring back. Huge glute and stability work."
+      },
+      {
+        id:"e4-3", type:"bw",
+        name:"Push-Ups",
+        sets:"4 rounds × Max quality reps",
+        note:"Drop to knees if form breaks, or do elevated with hands on a couch. Quality beats quantity."
+      },
+      {
+        id:"e4-4", type:"bw",
+        name:"Bear Crawls",
+        sets:"4 rounds × 20 paces",
+        note:"Knees 1 inch off the floor, back dead flat. The hardest core exercise hiding in plain sight."
+      },
+      {
+        id:"e4-5", type:"bw",
+        name:"Bicycle Crunches (Mat)",
+        sets:"4 rounds × 30 total reps",
+        note:"Slow and controlled. Opposite elbow to knee. This finishes the family circuit."
+      }
+    ]
+  }
+};
+
+const TIPS = [
+  "You are not a dieter. You are an athlete in a high-stress preparation phase. The gym's only job right now is to be a stress reliever, not a stress producer.",
+  "A 15-minute session where you stretch your shoulders, pull a cable bar a few times, and breathe deeply is an unbelievable athletic victory.",
+  "Sleep is the training session. When work intensity spikes, your brain uses sleep as a survival mechanism. Honor it.",
+  "Lifting heavy but leaving 1–2 reps in reserve builds dry, dense muscle tissue. That tissue burns fat 24/7.",
+  "High cortisol can bloat the scale by 5–8 lbs overnight with water retention. That's not fat — it's stress. Flush it with Zone 2 and deep sleep.",
+  "Take your creatine, prioritize your sleep, play with your kid during Day 4, and watch your body respond to recovery.",
+  "Focus on adding 5 lbs to your leg press or shaving 10 seconds off your Day 4 circuit. Your physique changes as a side effect.",
+  "The 15-Minute Protein Anchor: when a sugar craving hits, eat 20–30g of protein first and wait 15 minutes. The craving will shrink dramatically."
+];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let state = {};
+let currentDay = 1;
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('athleteos_v2');
+    if (s) state = JSON.parse(s);
+  } catch(e) { state = {}; }
+}
+
+function saveState() {
+  try { localStorage.setItem('athleteos_v2', JSON.stringify(state)); } catch(e) {}
+}
+
+function resetAllState() {
+  if (confirm('Reset all workout progress for the week?')) {
+    state = {};
+    saveState();
+    updateHomeProgress();
+    showScreen('home');
+  }
+}
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const screen = document.getElementById('screen-' + name);
+  screen.classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name !== 'workout') screen.scrollTop = 0;
+}
+
+// ══════════════════════════════════════
+// WORKOUT RENDERING
+// ══════════════════════════════════════
+function openWorkout(dayNum) {
+  currentDay = dayNum;
+  renderWorkout(dayNum);
+  showScreen('workout');
+  document.getElementById('screen-workout').scrollTop = 0;
+  document.getElementById('workout-content').classList.add('workout-anim');
+  setTimeout(() => document.getElementById('workout-content').classList.remove('workout-anim'), 400);
+}
+
+function renderWorkout(dayNum) {
+  const day = WORKOUTS[dayNum];
+  const stateKey = 'day' + dayNum;
+  if (!state[stateKey]) state[stateKey] = {};
+  const ds = state[stateKey];
+
+  let html = `
+  <div class="workout-header">
+    <div class="workout-header-left">
+      <div class="workout-day-chip">
+        <span style="color:${day.color}">● DAY ${dayNum}</span>
+      </div>
+      <div class="workout-title">${day.name}</div>
+      <div class="workout-meta">${day.targets}</div>
+    </div>
+    <button class="back-btn" onclick="showScreen('home')">← Back</button>
+  </div>`;
+
+  if (day.intro) {
+    html += `<div style="margin:0 16px 16px;background:var(--blue-dim);border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.55;">${day.intro}</div>`;
+  }
+
+  // Warmup
+  html += `
+  <div class="warmup-strip">
+    <button class="warmup-toggle" onclick="toggleWarmup(this)">
+      ⚡ 5-Min Athletic Warm-Up <span>▼</span>
+    </button>
+    <div class="warmup-body">
+      <div class="warmup-item"><strong>1. World's Greatest Stretch</strong>5 reps/side — Opens hips, thoracic spine, and chest.</div>
+      <div class="warmup-item"><strong>2. 90/90 Hip Flows</strong>30 seconds — Restores internal/external hip rotation.</div>
+      <div class="warmup-item"><strong>3. Arm Walkouts to Plank</strong>5 reps — Wakes up core and shoulder stability.</div>
+      <div class="warmup-item"><strong>4. Elastic Pogo Hops</strong>30 seconds — Springy ankle bounces to fire up your CNS.</div>
+    </div>
+  </div>`;
+
+  // Exercises
+  html += `<div class="exercises-list">`;
+
+  day.exercises.forEach(ex => {
+    if (ex.type === 'main') {
+      html += renderMainEx(ex, ds, dayNum);
+    } else if (ex.type === 'superset') {
+      html += renderSuperset(ex, ds, dayNum);
+    } else if (ex.type === 'core') {
+      html += renderSpecialEx(ex, ds, dayNum, 'core', '🛡️ 10-Min Athletic Abs Finisher');
+    } else if (ex.type === 'cardio') {
+      html += renderSpecialEx(ex, ds, dayNum, 'cardio', '🏃 15-Min Aerobic Flush');
+    } else if (ex.type === 'bw') {
+      html += renderBWEx(ex, ds, dayNum);
+    }
+  });
+
+  // Done banner
+  const totalEx = countExercises(day);
+  const doneEx = countDone(ds);
+  const allDone = doneEx >= totalEx && totalEx > 0;
+  html += `<div class="done-banner" id="done-banner" style="${allDone ? 'display:block' : 'display:none'}">
+    <div class="done-banner-title">🏆 Session Complete!</div>
+    <div class="done-banner-sub">Day ${dayNum} done. Rest, eat your protein, and recover.</div>
+  </div>`;
+
+  html += `</div><div class="spacer"></div>`;
+  document.getElementById('workout-content').innerHTML = html;
+  updateDoneBanner(dayNum);
+}
+
+function renderMainEx(ex, ds, dayNum) {
+  const done = ds[ex.id];
+  const weights = ds['w_' + ex.id] || [];
+  let weightInputs = '';
+  for (let i = 0; i < ex.weightSets; i++) {
+    weightInputs += `<input type="number" class="weight-input" inputmode="numeric" 
+      placeholder="S${i+1}" value="${weights[i] || ''}"
+      onchange="saveWeight('${ex.id}',${i},this.value,${dayNum})" 
+      onclick="this.select()">`;
+  }
+  return `
+  <div class="ex-card ${done ? 'done' : ''} ${ds['expanded_'+ex.id] ? 'expanded' : ''}" id="card-${ex.id}">
+    <div class="ex-tap-row" onclick="tapExercise('${ex.id}', ${dayNum}, 'main')">
+      <div class="ex-check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#080c0a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="ex-main">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-sets">${ex.sets} · ${ex.rest}</div>
+      </div>
+      <div class="ex-expand-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <span class="ex-badge badge-${ex.badge}">${ex.badgeLabel}</span>
+      <div class="ex-note">${ex.note}</div>
+      <div class="weight-logger">
+        <div class="weight-logger-label">Log Weight (lbs)</div>
+        <div class="weight-inputs">${weightInputs}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderSuperset(ss, ds, dayNum) {
+  let inner = ss.exercises.map(ex => {
+    const done = ds[ex.id];
+    return `
+    <div class="ex-card ${done ? 'done' : ''} ${ds['expanded_'+ex.id] ? 'expanded' : ''}" id="card-${ex.id}">
+      <div class="ex-tap-row" onclick="tapExercise('${ex.id}', ${dayNum}, 'main')">
+        <div class="ex-check-circle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#080c0a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="ex-main">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-sets">${ex.sets}</div>
+        </div>
+        <div class="ex-expand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="ex-detail">
+        <span class="ex-badge badge-${ex.badge}">${ex.badgeLabel}</span>
+        <div class="ex-note">${ex.note}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="ss-block">
+    <div class="ss-header">⚡ ${ss.label}</div>
+    ${inner}
+  </div>`;
+}
+
+function renderSpecialEx(ex, ds, dayNum, type, header) {
+  const done = ds[ex.id];
+  const doneClass = type === 'core' ? 'done-abs' : 'done-cardio';
+  const noteColor = type === 'core' ? 'var(--blue)' : 'var(--pink)';
+  return `
+  <div class="special-block ${type}">
+    <div class="special-header">${header}</div>
+    <div class="ex-card ${done ? doneClass : ''} ${ds['expanded_'+ex.id] ? 'expanded' : ''}" id="card-${ex.id}">
+      <div class="ex-tap-row" onclick="tapExercise('${ex.id}', ${dayNum}, '${type}')">
+        <div class="ex-check-circle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${type==='core'?'#080c0a':'#080c0a'}" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="ex-main">
+          <div class="ex-name" style="color:${noteColor}">${ex.name}</div>
+          <div class="ex-sets">${ex.sets}</div>
+        </div>
+        <div class="ex-expand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="ex-detail">
+        <div class="ex-note" style="color:${noteColor};opacity:.8">${ex.note}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderBWEx(ex, ds, dayNum) {
+  const done = ds[ex.id];
+  return `
+  <div class="ex-card ${done ? 'done' : ''} ${ds['expanded_'+ex.id] ? 'expanded' : ''}" id="card-${ex.id}" style="border-color:var(--blue-dim)">
+    <div class="ex-tap-row" onclick="tapExercise('${ex.id}', ${dayNum}, 'main')">
+      <div class="ex-check-circle" style="border-color:rgba(0,212,255,0.3)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#080c0a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="ex-main">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-sets">${ex.sets}</div>
+      </div>
+      <div class="ex-expand-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-note">${ex.note}</div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════
+// INTERACTIONS
+// ══════════════════════════════════════
+function tapExercise(id, dayNum, type) {
+  const stateKey = 'day' + dayNum;
+  if (!state[stateKey]) state[stateKey] = {};
+  const ds = state[stateKey];
+
+  // Toggle expanded
+  const card = document.getElementById('card-' + id);
+  if (!card) return;
+
+  // If tapping the check area, toggle completion
+  // Tap anywhere on top row = expand/collapse detail
+  ds['expanded_' + id] = !ds['expanded_' + id];
+  card.classList.toggle('expanded');
+
+  saveState();
+}
+
+// Separate function for the check circle tap
+function tapCheck(id, dayNum, type, event) {
+  event.stopPropagation();
+  const stateKey = 'day' + dayNum;
+  if (!state[stateKey]) state[stateKey] = {};
+  const ds = state[stateKey];
+  ds[id] = !ds[id];
+  saveState();
+  renderWorkout(dayNum);
+  updateHomeProgress();
+}
+
+// Override: make the check circle call tapCheck, and row calls expand
+// Re-render approach: just re-render on any interaction
+function tapExercise(id, dayNum, type) {
+  const stateKey = 'day' + dayNum;
+  if (!state[stateKey]) state[stateKey] = {};
+  const ds = state[stateKey];
+  // Toggle done
+  ds[id] = !ds[id];
+  saveState();
+  renderWorkout(dayNum);
+  updateHomeProgress();
+}
+
+function saveWeight(id, setIndex, value, dayNum) {
+  const stateKey = 'day' + dayNum;
+  if (!state[stateKey]) state[stateKey] = {};
+  if (!state[stateKey]['w_' + id]) state[stateKey]['w_' + id] = [];
+  state[stateKey]['w_' + id][setIndex] = value;
+  saveState();
+}
+
+function toggleWarmup(btn) {
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+  btn.querySelector('span').textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+// ══════════════════════════════════════
+// PROGRESS
+// ══════════════════════════════════════
+function countExercises(day) {
+  let count = 0;
+  day.exercises.forEach(ex => {
+    if (ex.type === 'superset') count += ex.exercises.length;
+    else count++;
+  });
+  return count;
+}
+
+function countDone(ds) {
+  return Object.keys(ds).filter(k => !k.startsWith('w_') && !k.startsWith('expanded_') && ds[k] === true).length;
+}
+
+function updateDoneBanner(dayNum) {
+  const day = WORKOUTS[dayNum];
+  const ds = state['day' + dayNum] || {};
+  const total = countExercises(day);
+  const done = countDone(ds);
+  const banner = document.getElementById('done-banner');
+  if (banner) banner.style.display = (done >= total && total > 0) ? 'block' : 'none';
+}
+
+function updateHomeProgress() {
+  let daysDone = 0;
+  for (let d = 1; d <= 4; d++) {
+    const day = WORKOUTS[d];
+    const ds = state['day' + d] || {};
+    const total = countExercises(day);
+    const done = countDone(ds);
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const bar = document.getElementById('bar-' + d);
+    if (bar) bar.style.width = pct + '%';
+    const check = document.getElementById('check-' + d);
+    if (check) {
+      if (done >= total && total > 0) { check.textContent = '✅'; daysDone++; }
+      else if (done > 0) check.textContent = `${pct}%`;
+      else check.textContent = '—';
+    }
+  }
+  const pct = Math.round((daysDone / 4) * 100);
+  const circumference = 339.3;
+  const offset = circumference - (pct / 100) * circumference;
+  const ring = document.getElementById('progress-ring');
+  if (ring) ring.style.strokeDashoffset = offset;
+  const ringPct = document.getElementById('ring-pct');
+  if (ringPct) ringPct.textContent = pct + '%';
+  const statDone = document.getElementById('stat-done');
+  if (statDone) statDone.textContent = daysDone + ' / 4';
+}
+
+// ══════════════════════════════════════
+// AUTO-REG
+// ══════════════════════════════════════
+function selectOpt(el) {
+  const group = el.dataset.group;
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function calcReadyState() {
+  const sleepEl = document.querySelector('[data-group="sleep"].selected');
+  const soreEl = document.querySelector('[data-group="sore"].selected');
+  const motEl = document.querySelector('[data-group="mot"].selected');
+  if (!sleepEl || !soreEl || !motEl) return;
+  const score = +sleepEl.dataset.val + +soreEl.dataset.val + +motEl.dataset.val;
+  const card = document.getElementById('result-card');
+  const title = document.getElementById('result-title');
+  const desc = document.getElementById('result-desc');
+  card.classList.add('visible');
+
+  if (score >= 8) {
+    card.style.borderColor = 'var(--volt)';
+    card.style.background = 'rgba(200,255,32,0.05)';
+    title.innerHTML = '🟢 Green Light: Go Heavy';
+    title.style.color = 'var(--volt)';
+    desc.textContent = 'Your body and nervous system are primed. Push the weights on your main lifts. Challenge yourself with 1 RIR today.';
+  } else if (score >= 5) {
+    card.style.borderColor = 'var(--amber)';
+    card.style.background = 'rgba(255,176,32,0.05)';
+    title.innerHTML = '🟡 Yellow Light: Steady Growth';
+    title.style.color = 'var(--amber)';
+    desc.textContent = 'You\'re ready to perform but not at peak. Stick to the plan. Leave exactly 2 RIR on all main movements. Focus on form and contraction.';
+  } else {
+    card.style.borderColor = 'var(--red)';
+    card.style.background = 'rgba(255,64,64,0.05)';
+    title.innerHTML = '🔴 Red Light: Active Recovery';
+    title.style.color = 'var(--red)';
+    desc.textContent = 'Systemic stress is too high. Reduce all weights by 15–20%. Move dynamically, breathe deeply, and focus on cellular recovery. This is still a win.';
+  }
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ══════════════════════════════════════
+// PDF / PRINT
+// ══════════════════════════════════════
+function printWorkout() {
+  const day = WORKOUTS[currentDay];
+  const printWin = window.open('', '_blank');
+  printWin.document.write(`<!DOCTYPE html><html><head>
+    <title>Athlete OS — Day ${currentDay}: ${day.name}</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; color: #111; max-width: 700px; margin: 0 auto; }
+      h1 { font-size: 22px; margin-bottom: 4px; }
+      .sub { font-size: 13px; color: #666; margin-bottom: 16px; }
+      .section { margin-bottom: 14px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+      .sec-head { background: #f5f5f5; padding: 8px 12px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+      .ss-head { background: #fffbe6; padding: 6px 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; color: #b07800; }
+      .ex { padding: 10px 12px; border-top: 1px solid #eee; }
+      .ex-name { font-size: 14px; font-weight: 600; }
+      .ex-sets { font-size: 12px; color: #555; }
+      .ex-note { font-size: 11px; color: #888; margin-top: 4px; }
+      .weight-row { display: flex; gap: 6px; margin-top: 6px; }
+      .weight-box { border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; font-size: 11px; min-width: 60px; text-align: center; }
+      .warmup { background: #f9ffe6; border: 1px solid #d0e88c; border-radius: 6px; padding: 12px 14px; margin-bottom: 14px; }
+      .warmup h3 { font-size: 13px; margin-bottom: 8px; color: #5a7a00; }
+      .warmup li { font-size: 12px; margin-bottom: 4px; }
+      @media print { button { display: none; } }
+    </style>
+  </head><body>`);
+  printWin.document.write(`<h1>Day ${currentDay}: ${day.name}</h1><div class="sub">${day.targets} — Phase 3.0: The Athletic Pivot</div>`);
+  printWin.document.write(`<div class="warmup"><h3>⚡ 5-Minute Warm-Up</h3><ul>
+    <li>World's Greatest Stretch — 5 reps/side</li>
+    <li>90/90 Hip Flows — 30 seconds</li>
+    <li>Arm Walkouts to Plank — 5 reps</li>
+    <li>Elastic Pogo Hops — 30 seconds</li>
+  </ul></div>`);
+
+  day.exercises.forEach(ex => {
+    if (ex.type === 'main') {
+      const weights = (state['day'+currentDay] || {})['w_'+ex.id] || [];
+      let wboxes = '';
+      for (let i = 0; i < ex.weightSets; i++) wboxes += `<div class="weight-box">Set ${i+1}: ${weights[i] ? weights[i]+'lbs' : '____'}</div>`;
+      printWin.document.write(`<div class="section"><div class="sec-head">${ex.name}</div><div class="ex"><div class="ex-sets">${ex.sets} · ${ex.rest}</div><div class="ex-note">${ex.note}</div><div class="weight-row">${wboxes}</div></div></div>`);
+    } else if (ex.type === 'superset') {
+      let inner = `<div class="sec-head">Superset</div><div class="ss-head">⚡ ${ex.label}</div>`;
+      ex.exercises.forEach(e => {
+        inner += `<div class="ex"><div class="ex-name">${e.name}</div><div class="ex-sets">${e.sets}</div><div class="ex-note">${e.note}</div></div>`;
+      });
+      printWin.document.write(`<div class="section">${inner}</div>`);
+    } else {
+      printWin.document.write(`<div class="section"><div class="sec-head">${ex.name}</div><div class="ex"><div class="ex-sets">${ex.sets}</div><div class="ex-note">${ex.note}</div></div></div>`);
+    }
+  });
+
+  printWin.document.write(`<br><button onclick="window.print()">🖨️ Print / Save as PDF</button></body></html>`);
+  printWin.document.close();
+  setTimeout(() => printWin.print(), 500);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+window.onload = function() {
+  loadState();
+
+  // Set coach tip (rotate daily)
+  const tipIndex = new Date().getDay() % TIPS.length;
+  document.getElementById('coach-tip-text').textContent = TIPS[tipIndex];
+
+  // Set today's suggested day (rotate M-F)
+  const dayMap = [4,1,2,3,4,1,2]; // Sun=4,Mon=1,Tue=2,Wed=3,Thu=4,Fri=1,Sat=2
+  const suggestedDay = dayMap[new Date().getDay()];
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active-day'));
+  const sugCard = document.getElementById('home-day-' + suggestedDay);
+  if (sugCard) sugCard.classList.add('active-day');
+
+  updateHomeProgress();
+
+  // Default workout screen to today's suggested day
+  currentDay = suggestedDay;
+  renderWorkout(suggestedDay);
+};
+</script>
+</body>
+</html>
