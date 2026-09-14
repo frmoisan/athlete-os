@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "program": {
+    "version": "phase-3.0",
+    "phase": "Phase 3.0",
+    "name": "The Athletic Pivot",
+    "title_top": "Athlete",
+    "title_bottom": "OS",
+    "subtitle": "The Athletic Pivot — Train Smart, Recover Faster",
+    "recovery_rule": "1–2 RIR",
+    "steps_target": "8–10k"
+  },
+
+  "day_rotation": [4, 1, 2, 3, 4, 1, 2],
+
+  "warmup": {
+    "title": "5-Min Athletic Warm-Up",
+    "items": [
+      { "name": "World's Greatest Stretch", "detail": "5 reps/side — Opens hips, thoracic spine, and chest." },
+      { "name": "90/90 Hip Flows", "detail": "30 seconds — Restores internal/external hip rotation." },
+      { "name": "Arm Walkouts to Plank", "detail": "5 reps — Wakes up core and shoulder stability." },
+      { "name": "Elastic Pogo Hops", "detail": "30 seconds — Springy ankle bounces to fire up your CNS." }
+    ]
+  },
+
+  "recovery": [
+    { "icon": "🧠", "title": "Creatine", "color": "volt", "desc": "5g daily. Clears brain fog under sleep deprivation." },
+    { "icon": "🌙", "title": "Magnesium", "color": "blue", "desc": "200–400mg Bisglycinate, 45 min before bed." },
+    { "icon": "🥩", "title": "Protein Anchor", "color": "amber", "desc": "20–30g fast protein before touching any sugar craving." },
+    { "icon": "🧂", "title": "Adrenal Salt", "color": "pink", "desc": "Warm water + sea salt pinch when dragging. Kills cravings." }
+  ],
+
+  "tips": [
+    "You are not a dieter. You are an athlete in a high-stress preparation phase. The gym's only job right now is to be a stress reliever, not a stress producer.",
+    "A 15-minute session where you stretch your shoulders, pull a cable bar a few times, and breathe deeply is an unbelievable athletic victory.",
+    "Sleep is the training session. When work intensity spikes, your brain uses sleep as a survival mechanism. Honor it.",
+    "Lifting heavy but leaving 1–2 reps in reserve builds dry, dense muscle tissue. That tissue burns fat 24/7.",
+    "High cortisol can bloat the scale by 5–8 lbs overnight with water retention. That's not fat — it's stress. Flush it with Zone 2 and deep sleep.",
+    "Take your creatine, prioritize your sleep, play with your kid during Day 4, and watch your body respond to recovery.",
+    "Focus on adding 5 lbs to your leg press or shaving 10 seconds off your Day 4 circuit. Your physique changes as a side effect.",
+    "The 15-Minute Protein Anchor: when a sugar craving hits, eat 20–30g of protein first and wait 15 minutes. The craving will shrink dramatically."
+  ],
+
+  "days": [
+    {
+      "day": 1,
+      "name": "Upper Power",
+      "pill": "Heavy",
+      "color": "red",
+      "targets": "Chest · Back · Shoulders · Arms",
+      "home_target": "Chest · Back · Shoulders · Arms",
+      "exercises": [
+        {
+          "type": "main",
+          "name": "Bench Press",
+          "sets": "3 sets × 5 reps",
+          "rest": "Rest 120s",
+          "badge": "power",
+          "badgeLabel": "Heavy Force",
+          "weightSets": 3,
+          "note": "Control the negative, explode up. Leave 2 RIR. This is your anchor lift."
+        },
+        {
+          "type": "superset",
+          "label": "SUPERSET A",
+          "exercises": [
+            { "name": "Single-Arm DB Row", "sets": "3 × 10 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Drive elbow to hip, squeeze lat at top." },
+            { "name": "Incline DB Press (30°)", "sets": "3 × 10 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Rest 60s after 2b. Focus on chest stretch at the bottom." }
+          ]
+        },
+        {
+          "type": "superset",
+          "label": "SUPERSET B — The Arm Pump",
+          "exercises": [
+            { "name": "DB Hammer Curls", "sets": "3 × 12 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Neutral grip targets brachialis for arm thickness." },
+            { "name": "Parallel Bar Dips", "sets": "3 × Max reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Rest 60s after 3b. Keep shoulders safe — don't dip too deep." }
+          ]
+        },
+        {
+          "type": "core",
+          "name": "Day 1 Abs Circuit (×3)",
+          "sets": "Deadbugs: 12/side · Leg Raises: 15",
+          "note": "Keep lower back FLAT on mat the entire time. Rest 45s between rounds."
+        },
+        {
+          "type": "cardio",
+          "name": "Zone 2 Aerobic Flush",
+          "sets": "15 Minutes · Incline Walk or Bike",
+          "note": "Sweat heavily but you can still talk. This flushes stress cortisol water from your body."
+        }
+      ]
+    },
+
+    {
+      "day": 2,
+      "name": "Lower Speed",
+      "pill": "Drive",
+      "color": "amber",
+      "targets": "Quads · Hamstrings · Glutes · Calves",
+      "home_target": "Quads · Hamstrings · Glutes · Calves",
+      "exercises": [
+        {
+          "type": "main",
+          "name": "Leg Press (Heavy Tempo)",
+          "sets": "3 sets × 8–10 reps",
+          "rest": "Rest 120s",
+          "badge": "power",
+          "badgeLabel": "Heavy Force",
+          "weightSets": 3,
+          "note": "3 seconds down, 1 second pause, explosive drive up. Quad destroyer."
+        },
+        {
+          "type": "superset",
+          "label": "SUPERSET A — Glutes & Hamstrings",
+          "exercises": [
+            { "name": "Dumbbell RDLs", "sets": "3 × 10 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Hinge hard at hips. Feel a massive stretch through your glutes and hamstrings." },
+            { "name": "Standing Calf Raises", "sets": "3 × 15 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Rest 60s after 2b. Flex hard at the top, slow on the way down." }
+          ]
+        },
+        {
+          "type": "superset",
+          "label": "SUPERSET B — Unilateral Athleticism",
+          "exercises": [
+            { "name": "DB Box Step-Ups", "sets": "3 × 8/leg", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Drive through the heel of the working leg. Full hip extension at the top." },
+            { "name": "Seated Leg Curls", "sets": "3 × 12 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Rest 60s after 3b. Focus on the squeeze at full contraction." }
+          ]
+        },
+        {
+          "type": "core",
+          "name": "Day 2 Abs Circuit (×3)",
+          "sets": "Plank Shoulder Taps: 20 · Bird-Dogs: 10/side",
+          "note": "No equipment needed. Rest 45s between rounds. Focus entirely on anti-rotation stability."
+        },
+        {
+          "type": "cardio",
+          "name": "Zone 2 Aerobic Flush",
+          "sets": "15 Minutes · Incline Walk or Bike",
+          "note": "On the treadmill or bike post-lift. Flushes metabolic waste out of your legs."
+        }
+      ]
+    },
+
+    {
+      "day": 3,
+      "name": "Upper Volume",
+      "pill": "Pump",
+      "color": "volt",
+      "targets": "Chest · Back · Shoulders · Arms",
+      "home_target": "Chest · Back · Shoulders · Arms",
+      "exercises": [
+        {
+          "type": "main",
+          "name": "Lat Pulldown",
+          "sets": "4 sets × 8 reps",
+          "rest": "Rest 90s",
+          "badge": "power",
+          "badgeLabel": "Width Builder",
+          "weightSets": 4,
+          "note": "Squeeze lats downward. Keep chest proud and spine long. 2 RIR."
+        },
+        {
+          "type": "superset",
+          "label": "SUPERSET A — Posture & Wings",
+          "exercises": [
+            { "name": "DB Incline Fly (30°)", "sets": "3 × 12 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Wide arc, feel the deep chest stretch. Not a press — fly." },
+            { "name": "Face Pulls / DB Reverse Fly", "sets": "3 × 15 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Rest 60s after 2b. Pull rear delts. Critical for posture under desk stress." }
+          ]
+        },
+        {
+          "type": "superset",
+          "label": "SUPERSET B — Peak & Horseshoe",
+          "exercises": [
+            { "name": "Preacher Curls", "sets": "3 × 12 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Isolate the bicep peak. Controlled stretch at the bottom." },
+            { "name": "Overhead Tricep Extension", "sets": "3 × 15 reps", "badge": "hyp", "badgeLabel": "Hypertrophy", "note": "Rest 60s after 3b. Deep stretch into the long head for horseshoe shape." }
+          ]
+        },
+        {
+          "type": "core",
+          "name": "Day 3 Abs Circuit (×3)",
+          "sets": "Reverse Crunches: 15 · Hollow Body Hold: 30s",
+          "note": "Lying on mat. Rest 45s between rounds. Lower belly compression work."
+        },
+        {
+          "type": "cardio",
+          "name": "Zone 2 Aerobic Flush",
+          "sets": "15 Minutes · Incline Walk or Bike",
+          "note": "Fires up slow-twitch fibers and lowers nervous system tension before you leave."
+        }
+      ]
+    },
+
+    {
+      "day": 4,
+      "name": "Home Crucible",
+      "pill": "Play",
+      "color": "blue",
+      "targets": "100% Bodyweight Conditioning",
+      "home_target": "100% Bodyweight — Train with your kid 🏡",
+      "intro": "Zero machines. Zero dumbbells. Do this in the living room, backyard, or park with your kid! Complete exercises 1–5 back-to-back. Rest 90s. Repeat for 4 rounds. Let your kid mimic the moves — especially the Bear Crawls. 🐻",
+      "exercises": [
+        { "type": "bw", "name": "Air Squats", "sets": "4 rounds × 15 reps", "note": "Heels flat. Add a hop at the top for explosive variation. Perfect to race your kid." },
+        { "type": "bw", "name": "Lateral Skater Hops", "sets": "4 rounds × 10/side", "note": "Leap sideways, land softly on one foot, spring back. Huge glute and stability work." },
+        { "type": "bw", "name": "Push-Ups", "sets": "4 rounds × Max quality reps", "note": "Drop to knees if form breaks, or do elevated with hands on a couch. Quality beats quantity." },
+        { "type": "bw", "name": "Bear Crawls", "sets": "4 rounds × 20 paces", "note": "Knees 1 inch off the floor, back dead flat. The hardest core exercise hiding in plain sight." },
+        { "type": "bw", "name": "Bicycle Crunches (Mat)", "sets": "4 rounds × 30 total reps", "note": "Slow and controlled. Opposite elbow to knee. This finishes the family circuit." }
+      ]
+    }
+  ]
+}

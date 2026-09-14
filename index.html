@@ -481,9 +481,9 @@ html, body {
 ════════════════════════════════════════ -->
 <div id="screen-home" class="screen active">
   <div class="home-header">
-    <div class="phase-chip">⚡ Phase 3.0</div>
-    <div class="home-title">Athlete<br><span>OS</span></div>
-    <div class="home-sub">The Athletic Pivot — Train Smart, Recover Faster</div>
+    <div class="phase-chip" id="phase-chip">⚡ …</div>
+    <div class="home-title" id="home-title">Athlete<br><span>OS</span></div>
+    <div class="home-sub" id="home-sub">Loading program…</div>
   </div>
 
   <div class="ring-section">
@@ -506,11 +506,11 @@ html, body {
         <div class="ring-stat-key">Days Done</div>
       </div>
       <div class="ring-stat-item">
-        <div class="ring-stat-val" style="color:#6b7d6e">1–2 RIR</div>
+        <div class="ring-stat-val" style="color:#6b7d6e" id="stat-rir">—</div>
         <div class="ring-stat-key">Recovery Rule</div>
       </div>
       <div class="ring-stat-item">
-        <div class="ring-stat-val" style="color:#6b7d6e">8–10k</div>
+        <div class="ring-stat-val" style="color:#6b7d6e" id="stat-steps">—</div>
         <div class="ring-stat-key">Steps / Day</div>
       </div>
     </div>
@@ -521,73 +521,11 @@ html, body {
     <div class="coach-tip-text" id="coach-tip-text">Loading today's insight...</div>
   </div>
 
-  <div class="section-label">Your 4-Day Split</div>
-  <div class="day-cards">
-    <div class="day-card active-day" id="home-day-1" onclick="openWorkout(1)">
-      <div class="day-num">1</div>
-      <div class="day-info">
-        <div class="day-name">Upper Power</div>
-        <div class="day-target">Chest · Back · Shoulders · Arms</div>
-      </div>
-      <div class="day-pill" style="background:var(--red-dim);color:var(--red);">Heavy</div>
-      <div class="day-check" id="check-1">—</div>
-      <div class="day-progress-bar" id="bar-1" style="width:0%"></div>
-    </div>
-    <div class="day-card" id="home-day-2" onclick="openWorkout(2)">
-      <div class="day-num">2</div>
-      <div class="day-info">
-        <div class="day-name">Lower Speed</div>
-        <div class="day-target">Quads · Hamstrings · Glutes · Calves</div>
-      </div>
-      <div class="day-pill" style="background:var(--amber-dim);color:var(--amber);">Drive</div>
-      <div class="day-check" id="check-2">—</div>
-      <div class="day-progress-bar" id="bar-2" style="width:0%"></div>
-    </div>
-    <div class="day-card" id="home-day-3" onclick="openWorkout(3)">
-      <div class="day-num">3</div>
-      <div class="day-info">
-        <div class="day-name">Upper Volume</div>
-        <div class="day-target">Chest · Back · Shoulders · Arms</div>
-      </div>
-      <div class="day-pill" style="background:var(--volt-dim);color:var(--volt);">Pump</div>
-      <div class="day-check" id="check-3">—</div>
-      <div class="day-progress-bar" id="bar-3" style="width:0%"></div>
-    </div>
-    <div class="day-card" id="home-day-4" onclick="openWorkout(4)">
-      <div class="day-num">4</div>
-      <div class="day-info">
-        <div class="day-name">Home Crucible</div>
-        <div class="day-target">100% Bodyweight — Train with your kid 🏡</div>
-      </div>
-      <div class="day-pill" style="background:var(--blue-dim);color:var(--blue);">Play</div>
-      <div class="day-check" id="check-4">—</div>
-      <div class="day-progress-bar" id="bar-4" style="width:0%"></div>
-    </div>
-  </div>
+  <div class="section-label" id="split-label">Your Split</div>
+  <div class="day-cards" id="day-cards"></div>
 
   <div class="section-label">Recovery Protocols</div>
-  <div class="recovery-grid">
-    <div class="rec-card">
-      <div class="rec-icon">🧠</div>
-      <div class="rec-title text-volt">Creatine</div>
-      <div class="rec-desc">5g daily. Clears brain fog under sleep deprivation.</div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-icon">🌙</div>
-      <div class="rec-title text-blue">Magnesium</div>
-      <div class="rec-desc">200–400mg Bisglycinate, 45 min before bed.</div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-icon">🥩</div>
-      <div class="rec-title text-amber">Protein Anchor</div>
-      <div class="rec-desc">20–30g fast protein before touching any sugar craving.</div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-icon">🧂</div>
-      <div class="rec-title text-pink">Adrenal Salt</div>
-      <div class="rec-desc">Warm water + sea salt pinch when dragging. Kills cravings.</div>
-    </div>
-  </div>
+  <div class="recovery-grid" id="recovery-grid"></div>
 
   <div class="spacer"></div>
   <div style="text-align:center; padding: 8px 16px;">
@@ -824,200 +762,120 @@ html, body {
 // ══════════════════════════════════════
 // DATA: All 4 workout days
 // ══════════════════════════════════════
-const WORKOUTS = {
-  1: {
-    name: "Upper Power",
-    tag: "Heavy Force",
-    tagColor: "var(--red)",
-    targets: "Chest · Back · Shoulders · Arms",
-    color: "var(--red)",
-    exercises: [
-      {
-        id:"e1-1", type:"main",
-        name:"Bench Press",
-        sets:"3 sets × 5 reps", rest:"Rest 120s",
-        badge:"power", badgeLabel:"Heavy Force",
-        note:"Control the negative, explode up. Leave 2 RIR. This is your anchor lift.",
-        weightSets:3
-      },
-      {
-        id:"ss1a", type:"superset", label:"SUPERSET A",
-        exercises:[
-          { id:"e1-2", name:"Single-Arm DB Row", sets:"3 × 10 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Drive elbow to hip, squeeze lat at top." },
-          { id:"e1-3", name:"Incline DB Press (30°)", sets:"3 × 10 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Rest 60s after 2b. Focus on chest stretch at the bottom." }
-        ]
-      },
-      {
-        id:"ss1b", type:"superset", label:"SUPERSET B — The Arm Pump",
-        exercises:[
-          { id:"e1-4", name:"DB Hammer Curls", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Neutral grip targets brachialis for arm thickness." },
-          { id:"e1-5", name:"Parallel Bar Dips", sets:"3 × Max reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Rest 60s after 3b. Keep shoulders safe — don't dip too deep." }
-        ]
-      },
-      {
-        id:"e1-abs", type:"core",
-        name:"Day 1 Abs Circuit (×3)",
-        sets:"Deadbugs: 12/side · Leg Raises: 15",
-        note:"Keep lower back FLAT on mat the entire time. Rest 45s between rounds."
-      },
-      {
-        id:"e1-cardio", type:"cardio",
-        name:"Zone 2 Aerobic Flush",
-        sets:"15 Minutes · Incline Walk or Bike",
-        note:"Sweat heavily but you can still talk. This flushes stress cortisol water from your body."
-      }
-    ]
-  },
-  2: {
-    name: "Lower Speed",
-    tag: "Posterior Drive",
-    tagColor: "var(--amber)",
-    targets: "Quads · Hamstrings · Glutes · Calves",
-    color: "var(--amber)",
-    exercises: [
-      {
-        id:"e2-1", type:"main",
-        name:"Leg Press (Heavy Tempo)",
-        sets:"3 sets × 8–10 reps", rest:"Rest 120s",
-        badge:"power", badgeLabel:"Heavy Force",
-        note:"3 seconds down, 1 second pause, explosive drive up. Quad destroyer.",
-        weightSets:3
-      },
-      {
-        id:"ss2a", type:"superset", label:"SUPERSET A — Glutes & Hamstrings",
-        exercises:[
-          { id:"e2-2", name:"Dumbbell RDLs", sets:"3 × 10 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Hinge hard at hips. Feel a massive stretch through your glutes and hamstrings." },
-          { id:"e2-3", name:"Standing Calf Raises", sets:"3 × 15 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Rest 60s after 2b. Flex hard at the top, slow on the way down." }
-        ]
-      },
-      {
-        id:"ss2b", type:"superset", label:"SUPERSET B — Unilateral Athleticism",
-        exercises:[
-          { id:"e2-4", name:"DB Box Step-Ups", sets:"3 × 8/leg", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Drive through the heel of the working leg. Full hip extension at the top." },
-          { id:"e2-5", name:"Seated Leg Curls", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Rest 60s after 3b. Focus on the squeeze at full contraction." }
-        ]
-      },
-      {
-        id:"e2-abs", type:"core",
-        name:"Day 2 Abs Circuit (×3)",
-        sets:"Plank Shoulder Taps: 20 · Bird-Dogs: 10/side",
-        note:"No equipment needed. Rest 45s between rounds. Focus entirely on anti-rotation stability."
-      },
-      {
-        id:"e2-cardio", type:"cardio",
-        name:"Zone 2 Aerobic Flush",
-        sets:"15 Minutes · Incline Walk or Bike",
-        note:"On the treadmill or bike post-lift. Flushes metabolic waste out of your legs."
-      }
-    ]
-  },
-  3: {
-    name: "Upper Volume",
-    tag: "Athletic Width",
-    tagColor: "var(--volt)",
-    targets: "Chest · Back · Shoulders · Arms",
-    color: "var(--volt)",
-    exercises: [
-      {
-        id:"e3-1", type:"main",
-        name:"Lat Pulldown",
-        sets:"4 sets × 8 reps", rest:"Rest 90s",
-        badge:"power", badgeLabel:"Width Builder",
-        note:"Squeeze lats downward. Keep chest proud and spine long. 2 RIR.",
-        weightSets:4
-      },
-      {
-        id:"ss3a", type:"superset", label:"SUPERSET A — Posture & Wings",
-        exercises:[
-          { id:"e3-2", name:"DB Incline Fly (30°)", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Wide arc, feel the deep chest stretch. Not a press — fly." },
-          { id:"e3-3", name:"Face Pulls / DB Reverse Fly", sets:"3 × 15 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Rest 60s after 2b. Pull rear delts. Critical for posture under desk stress." }
-        ]
-      },
-      {
-        id:"ss3b", type:"superset", label:"SUPERSET B — Peak & Horseshoe",
-        exercises:[
-          { id:"e3-4", name:"Preacher Curls", sets:"3 × 12 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Isolate the bicep peak. Controlled stretch at the bottom." },
-          { id:"e3-5", name:"Overhead Tricep Extension", sets:"3 × 15 reps", badge:"hyp", badgeLabel:"Hypertrophy",
-            note:"Rest 60s after 3b. Deep stretch into the long head for horseshoe shape." }
-        ]
-      },
-      {
-        id:"e3-abs", type:"core",
-        name:"Day 3 Abs Circuit (×3)",
-        sets:"Reverse Crunches: 15 · Hollow Body Hold: 30s",
-        note:"Lying on mat. Rest 45s between rounds. Lower belly compression work."
-      },
-      {
-        id:"e3-cardio", type:"cardio",
-        name:"Zone 2 Aerobic Flush",
-        sets:"15 Minutes · Incline Walk or Bike",
-        note:"Fires up slow-twitch fibers and lowers nervous system tension before you leave."
-      }
-    ]
-  },
-  4: {
-    name: "Home Crucible",
-    tag: "No Equipment",
-    tagColor: "var(--blue)",
-    targets: "100% Bodyweight Conditioning",
-    color: "var(--blue)",
-    intro: "Zero machines. Zero dumbbells. Do this in the living room, backyard, or park with your kid! Complete exercises 1–5 back-to-back. Rest 90s. Repeat for 4 rounds. Let your kid mimic the moves — especially the Bear Crawls. 🐻",
-    exercises: [
-      {
-        id:"e4-1", type:"bw",
-        name:"Air Squats",
-        sets:"4 rounds × 15 reps",
-        note:"Heels flat. Add a hop at the top for explosive variation. Perfect to race your kid."
-      },
-      {
-        id:"e4-2", type:"bw",
-        name:"Lateral Skater Hops",
-        sets:"4 rounds × 10/side",
-        note:"Leap sideways, land softly on one foot, spring back. Huge glute and stability work."
-      },
-      {
-        id:"e4-3", type:"bw",
-        name:"Push-Ups",
-        sets:"4 rounds × Max quality reps",
-        note:"Drop to knees if form breaks, or do elevated with hands on a couch. Quality beats quantity."
-      },
-      {
-        id:"e4-4", type:"bw",
-        name:"Bear Crawls",
-        sets:"4 rounds × 20 paces",
-        note:"Knees 1 inch off the floor, back dead flat. The hardest core exercise hiding in plain sight."
-      },
-      {
-        id:"e4-5", type:"bw",
-        name:"Bicycle Crunches (Mat)",
-        sets:"4 rounds × 30 total reps",
-        note:"Slow and controlled. Opposite elbow to knee. This finishes the family circuit."
-      }
-    ]
-  }
-};
+const PROGRAM_URL = 'program.json';
+const CACHE_KEY    = 'athleteos_program_cache';
 
-const TIPS = [
-  "You are not a dieter. You are an athlete in a high-stress preparation phase. The gym's only job right now is to be a stress reliever, not a stress producer.",
-  "A 15-minute session where you stretch your shoulders, pull a cable bar a few times, and breathe deeply is an unbelievable athletic victory.",
-  "Sleep is the training session. When work intensity spikes, your brain uses sleep as a survival mechanism. Honor it.",
-  "Lifting heavy but leaving 1–2 reps in reserve builds dry, dense muscle tissue. That tissue burns fat 24/7.",
-  "High cortisol can bloat the scale by 5–8 lbs overnight with water retention. That's not fat — it's stress. Flush it with Zone 2 and deep sleep.",
-  "Take your creatine, prioritize your sleep, play with your kid during Day 4, and watch your body respond to recovery.",
-  "Focus on adding 5 lbs to your leg press or shaving 10 seconds off your Day 4 circuit. Your physique changes as a side effect.",
-  "The 15-Minute Protein Anchor: when a sugar craving hits, eat 20–30g of protein first and wait 15 minutes. The craving will shrink dramatically."
-];
+let PROGRAM = null;
+let WORKOUTS = {};
+let TIPS = [];
+let STORAGE_KEY = 'athleteos_v3';
+
+function slug(s) {
+  return String(s).toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'x';
+}
+
+// Stable IDs derived from day + exercise name. No IDs needed in program.json.
+function assignIds(program) {
+  const seen = {};
+  (program.days || []).forEach(day => {
+    const stamp = ex => {
+      const base = 'd' + day.day + '-' + slug(ex.name);
+      let id = base, n = 2;
+      while (seen[id]) id = base + '-' + (n++);
+      seen[id] = true;
+      ex.id = id;
+    };
+    (day.exercises || []).forEach(block => {
+      if (block.type === 'superset') (block.exercises || []).forEach(stamp);
+      else stamp(block);
+    });
+  });
+}
+
+function applyProgram(program) {
+  PROGRAM = program;
+  assignIds(PROGRAM);
+  WORKOUTS = {};
+  (PROGRAM.days || []).forEach(d => { WORKOUTS[d.day] = d; });
+  TIPS = PROGRAM.tips || [];
+  // Bumping program.version in the JSON gives you a clean tracker automatically.
+  STORAGE_KEY = 'athleteos_' + slug((PROGRAM.program || {}).version || 'v1');
+}
+
+async function fetchProgram() {
+  let data = null;
+  try {
+    // Cache-buster: GitHub Pages' CDN and the iOS home-screen cache both lie.
+    const res = await fetch(PROGRAM_URL + '?v=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    data = await res.json();
+    if (!data || !Array.isArray(data.days) || !data.days.length) throw new Error('no days[]');
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) {}
+    return data;
+  } catch (e) {
+    console.warn('program.json fetch failed:', e.message, '— falling back to cache');
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) return JSON.parse(cached);
+    } catch (e2) {}
+    return null;
+  }
+}
+
+function showLoadError() {
+  document.getElementById('home-sub').textContent =
+    'Could not load program.json — and no cached copy on this device.';
+  document.getElementById('day-cards').innerHTML =
+    '<div class="rec-card" style="border-color:var(--red)">' +
+    '<div class="rec-title text-red">Program not loaded</div>' +
+    '<div class="rec-desc">Serve this page over http(s) (GitHub Pages), not by opening the file directly. ' +
+    'fetch() is blocked on file:// URLs.</div></div>';
+}
+
+// ══════════════════════════════════════
+// HOME RENDERING (from PROGRAM)
+// ══════════════════════════════════════
+function renderHome() {
+  const meta = PROGRAM.program || {};
+  document.getElementById('phase-chip').textContent = '⚡ ' + (meta.phase || '');
+  document.getElementById('home-title').innerHTML =
+    (meta.title_top || 'Athlete') + '<br><span>' + (meta.title_bottom || 'OS') + '</span>';
+  document.getElementById('home-sub').textContent = meta.subtitle || '';
+  document.getElementById('stat-rir').textContent = meta.recovery_rule || '—';
+  document.getElementById('stat-steps').textContent = meta.steps_target || '—';
+  document.title = (meta.title_top || 'Athlete') + ' ' + (meta.title_bottom || 'OS') +
+    (meta.phase ? ' — ' + meta.phase : '');
+
+  const days = PROGRAM.days;
+  document.getElementById('split-label').textContent = 'Your ' + days.length + '-Day Split';
+
+  document.getElementById('day-cards').innerHTML = days.map(d => `
+    <div class="day-card" id="home-day-${d.day}" onclick="openWorkout(${d.day})">
+      <div class="day-num">${d.day}</div>
+      <div class="day-info">
+        <div class="day-name">${d.name}</div>
+        <div class="day-target">${d.home_target || d.targets || ''}</div>
+      </div>
+      <div class="day-pill" style="background:var(--${d.color}-dim);color:var(--${d.color});">${d.pill || ''}</div>
+      <div class="day-check" id="check-${d.day}">—</div>
+      <div class="day-progress-bar" id="bar-${d.day}" style="width:0%"></div>
+    </div>`).join('');
+
+  document.getElementById('recovery-grid').innerHTML = (PROGRAM.recovery || []).map(r => `
+    <div class="rec-card">
+      <div class="rec-icon">${r.icon || ''}</div>
+      <div class="rec-title text-${r.color || 'volt'}">${r.title}</div>
+      <div class="rec-desc">${r.desc || ''}</div>
+    </div>`).join('');
+}
+
+function warmupItemsHTML() {
+  const w = PROGRAM.warmup || {};
+  return (w.items || []).map((it, i) =>
+    `<div class="warmup-item"><strong>${i + 1}. ${it.name}</strong>${it.detail || ''}</div>`
+  ).join('');
+}
 
 // ══════════════════════════════════════
 // STATE
@@ -1027,13 +885,13 @@ let currentDay = 1;
 
 function loadState() {
   try {
-    const s = localStorage.getItem('athleteos_v2');
+    const s = localStorage.getItem(STORAGE_KEY);
     if (s) state = JSON.parse(s);
   } catch(e) { state = {}; }
 }
 
 function saveState() {
-  try { localStorage.setItem('athleteos_v2', JSON.stringify(state)); } catch(e) {}
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
 }
 
 function resetAllState() {
@@ -1079,7 +937,7 @@ function renderWorkout(dayNum) {
   <div class="workout-header">
     <div class="workout-header-left">
       <div class="workout-day-chip">
-        <span style="color:${day.color}">● DAY ${dayNum}</span>
+        <span style="color:var(--${day.color})">● DAY ${dayNum}</span>
       </div>
       <div class="workout-title">${day.name}</div>
       <div class="workout-meta">${day.targets}</div>
@@ -1095,14 +953,9 @@ function renderWorkout(dayNum) {
   html += `
   <div class="warmup-strip">
     <button class="warmup-toggle" onclick="toggleWarmup(this)">
-      ⚡ 5-Min Athletic Warm-Up <span>▼</span>
+      ⚡ ${(PROGRAM.warmup && PROGRAM.warmup.title) || 'Warm-Up'} <span>▼</span>
     </button>
-    <div class="warmup-body">
-      <div class="warmup-item"><strong>1. World's Greatest Stretch</strong>5 reps/side — Opens hips, thoracic spine, and chest.</div>
-      <div class="warmup-item"><strong>2. 90/90 Hip Flows</strong>30 seconds — Restores internal/external hip rotation.</div>
-      <div class="warmup-item"><strong>3. Arm Walkouts to Plank</strong>5 reps — Wakes up core and shoulder stability.</div>
-      <div class="warmup-item"><strong>4. Elastic Pogo Hops</strong>30 seconds — Springy ankle bounces to fire up your CNS.</div>
-    </div>
+    <div class="warmup-body">${warmupItemsHTML()}</div>
   </div>`;
 
   // Exercises
@@ -1114,9 +967,9 @@ function renderWorkout(dayNum) {
     } else if (ex.type === 'superset') {
       html += renderSuperset(ex, ds, dayNum);
     } else if (ex.type === 'core') {
-      html += renderSpecialEx(ex, ds, dayNum, 'core', '🛡️ 10-Min Athletic Abs Finisher');
+      html += renderSpecialEx(ex, ds, dayNum, 'core', ex.header || '🛡️ 10-Min Athletic Abs Finisher');
     } else if (ex.type === 'cardio') {
-      html += renderSpecialEx(ex, ds, dayNum, 'cardio', '🏃 15-Min Aerobic Flush');
+      html += renderSpecialEx(ex, ds, dayNum, 'cardio', ex.header || '🏃 15-Min Aerobic Flush');
     } else if (ex.type === 'bw') {
       html += renderBWEx(ex, ds, dayNum);
     }
@@ -1140,7 +993,7 @@ function renderMainEx(ex, ds, dayNum) {
   const done = ds[ex.id];
   const weights = ds['w_' + ex.id] || [];
   let weightInputs = '';
-  for (let i = 0; i < ex.weightSets; i++) {
+  for (let i = 0; i < (ex.weightSets || 0); i++) {
     weightInputs += `<input type="number" class="weight-input" inputmode="numeric" 
       placeholder="S${i+1}" value="${weights[i] || ''}"
       onchange="saveWeight('${ex.id}',${i},this.value,${dayNum})" 
@@ -1254,43 +1107,10 @@ function renderBWEx(ex, ds, dayNum) {
 // ══════════════════════════════════════
 // INTERACTIONS
 // ══════════════════════════════════════
-function tapExercise(id, dayNum, type) {
+function tapExercise(id, dayNum) {
   const stateKey = 'day' + dayNum;
   if (!state[stateKey]) state[stateKey] = {};
-  const ds = state[stateKey];
-
-  // Toggle expanded
-  const card = document.getElementById('card-' + id);
-  if (!card) return;
-
-  // If tapping the check area, toggle completion
-  // Tap anywhere on top row = expand/collapse detail
-  ds['expanded_' + id] = !ds['expanded_' + id];
-  card.classList.toggle('expanded');
-
-  saveState();
-}
-
-// Separate function for the check circle tap
-function tapCheck(id, dayNum, type, event) {
-  event.stopPropagation();
-  const stateKey = 'day' + dayNum;
-  if (!state[stateKey]) state[stateKey] = {};
-  const ds = state[stateKey];
-  ds[id] = !ds[id];
-  saveState();
-  renderWorkout(dayNum);
-  updateHomeProgress();
-}
-
-// Override: make the check circle call tapCheck, and row calls expand
-// Re-render approach: just re-render on any interaction
-function tapExercise(id, dayNum, type) {
-  const stateKey = 'day' + dayNum;
-  if (!state[stateKey]) state[stateKey] = {};
-  const ds = state[stateKey];
-  // Toggle done
-  ds[id] = !ds[id];
+  state[stateKey][id] = !state[stateKey][id];
   saveState();
   renderWorkout(dayNum);
   updateHomeProgress();
@@ -1336,31 +1156,31 @@ function updateDoneBanner(dayNum) {
 }
 
 function updateHomeProgress() {
+  if (!PROGRAM) return;
+  const days = PROGRAM.days;
   let daysDone = 0;
-  for (let d = 1; d <= 4; d++) {
-    const day = WORKOUTS[d];
-    const ds = state['day' + d] || {};
+  days.forEach(day => {
+    const ds = state['day' + day.day] || {};
     const total = countExercises(day);
     const done = countDone(ds);
     const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-    const bar = document.getElementById('bar-' + d);
+    const bar = document.getElementById('bar-' + day.day);
     if (bar) bar.style.width = pct + '%';
-    const check = document.getElementById('check-' + d);
+    const check = document.getElementById('check-' + day.day);
     if (check) {
       if (done >= total && total > 0) { check.textContent = '✅'; daysDone++; }
       else if (done > 0) check.textContent = `${pct}%`;
       else check.textContent = '—';
     }
-  }
-  const pct = Math.round((daysDone / 4) * 100);
+  });
+  const pct = days.length ? Math.round((daysDone / days.length) * 100) : 0;
   const circumference = 339.3;
-  const offset = circumference - (pct / 100) * circumference;
   const ring = document.getElementById('progress-ring');
-  if (ring) ring.style.strokeDashoffset = offset;
+  if (ring) ring.style.strokeDashoffset = circumference - (pct / 100) * circumference;
   const ringPct = document.getElementById('ring-pct');
   if (ringPct) ringPct.textContent = pct + '%';
   const statDone = document.getElementById('stat-done');
-  if (statDone) statDone.textContent = daysDone + ' / 4';
+  if (statDone) statDone.textContent = daysDone + ' / ' + days.length;
 }
 
 // ══════════════════════════════════════
@@ -1432,19 +1252,17 @@ function printWorkout() {
       @media print { button { display: none; } }
     </style>
   </head><body>`);
-  printWin.document.write(`<h1>Day ${currentDay}: ${day.name}</h1><div class="sub">${day.targets} — Phase 3.0: The Athletic Pivot</div>`);
-  printWin.document.write(`<div class="warmup"><h3>⚡ 5-Minute Warm-Up</h3><ul>
-    <li>World's Greatest Stretch — 5 reps/side</li>
-    <li>90/90 Hip Flows — 30 seconds</li>
-    <li>Arm Walkouts to Plank — 5 reps</li>
-    <li>Elastic Pogo Hops — 30 seconds</li>
-  </ul></div>`);
+  printWin.document.write(`<h1>Day ${currentDay}: ${day.name}</h1><div class="sub">${day.targets} — ${(PROGRAM.program||{}).phase||''}: ${(PROGRAM.program||{}).name||''}</div>`);
+  const wu = (PROGRAM.warmup || {});
+  printWin.document.write(`<div class="warmup"><h3>⚡ ${wu.title || 'Warm-Up'}</h3><ul>` +
+    (wu.items || []).map(it => `<li>${it.name} — ${it.detail || ''}</li>`).join('') +
+    `</ul></div>`);
 
   day.exercises.forEach(ex => {
     if (ex.type === 'main') {
       const weights = (state['day'+currentDay] || {})['w_'+ex.id] || [];
       let wboxes = '';
-      for (let i = 0; i < ex.weightSets; i++) wboxes += `<div class="weight-box">Set ${i+1}: ${weights[i] ? weights[i]+'lbs' : '____'}</div>`;
+      for (let i = 0; i < (ex.weightSets || 0); i++) wboxes += `<div class="weight-box">Set ${i+1}: ${weights[i] ? weights[i]+'lbs' : '____'}</div>`;
       printWin.document.write(`<div class="section"><div class="sec-head">${ex.name}</div><div class="ex"><div class="ex-sets">${ex.sets} · ${ex.rest}</div><div class="ex-note">${ex.note}</div><div class="weight-row">${wboxes}</div></div></div>`);
     } else if (ex.type === 'superset') {
       let inner = `<div class="sec-head">Superset</div><div class="ss-head">⚡ ${ex.label}</div>`;
@@ -1465,23 +1283,30 @@ function printWorkout() {
 // ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
-window.onload = function() {
+window.onload = async function() {
+  const program = await fetchProgram();
+  if (!program) { showLoadError(); return; }
+
+  applyProgram(program);
   loadState();
+  renderHome();
 
-  // Set coach tip (rotate daily)
-  const tipIndex = new Date().getDay() % TIPS.length;
-  document.getElementById('coach-tip-text').textContent = TIPS[tipIndex];
+  // Coach tip rotates by weekday
+  if (TIPS.length) {
+    document.getElementById('coach-tip-text').textContent = TIPS[new Date().getDay() % TIPS.length];
+  }
 
-  // Set today's suggested day (rotate M-F)
-  const dayMap = [4,1,2,3,4,1,2]; // Sun=4,Mon=1,Tue=2,Wed=3,Thu=4,Fri=1,Sat=2
-  const suggestedDay = dayMap[new Date().getDay()];
+  // Today's suggested day, from day_rotation (Sun=index 0)
+  const rotation = PROGRAM.day_rotation || [];
+  let suggestedDay = rotation[new Date().getDay()];
+  if (!WORKOUTS[suggestedDay]) suggestedDay = PROGRAM.days[0].day;
+
   document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active-day'));
   const sugCard = document.getElementById('home-day-' + suggestedDay);
   if (sugCard) sugCard.classList.add('active-day');
 
   updateHomeProgress();
 
-  // Default workout screen to today's suggested day
   currentDay = suggestedDay;
   renderWorkout(suggestedDay);
 };
