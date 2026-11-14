@@ -1,0 +1,34 @@
+{
+  "program": "15-Minute Cardio-Respiratory Flush",
+  "schedule": [
+    "Lunch Break",
+    "Before Bed"
+  ],
+  "focus": "Diaphragmatic resistance, vagal tone, and parasympathetic recovery",
+  "exercises": [
+    {
+      "name": "4-7-8 Breathing",
+      "time_block": "Minutes 0:00 \u2013 3:00",
+      "execution": "Inhale through nose for 4s, hold for 7s, exhale completely through pursed lips for 8s.",
+      "benefit": "Builds CO2 tolerance to expand lung capacity; forcefully lowers heart rate via the vagus nerve."
+    },
+    {
+      "name": "Thoracic Windmills",
+      "time_block": "Minutes 3:00 \u2013 7:00 (Alternating)",
+      "execution": "Stand wide, hinge at hips. Left hand on right knee, reach right arm up to ceiling. Twist, follow hand with eyes, hold 3s. Alternate.",
+      "benefit": "Pries open the compressed ribcage, creating mechanical space for maximum lung expansion."
+    },
+    {
+      "name": "Deep Runner\u2019s Lunge",
+      "time_block": "Minutes 3:00 \u2013 7:00 (Alternating)",
+      "execution": "Deep forward lunge, both hands inside front foot, back knee on floor. Sink hips down.",
+      "benefit": "Releases hip flexors/psoas, allowing pooled blood to return to the lower body and relieving heart pumping strain."
+    },
+    {
+      "name": "Crocodile Breathing",
+      "time_block": "Minutes 7:00 \u2013 15:00",
+      "execution": "Lie face down flat. Forehead on stacked hands. Nose-breathe, forcing stomach hard against the floor.",
+      "benefit": "Acts as weightlifting for respiratory muscles; builds genuine lung strength and forces deep nervous system recovery."
+    }
+  ]
+}

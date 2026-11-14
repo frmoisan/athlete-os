@@ -1,0 +1,314 @@
+{
+  "program": "Phase 4.0: Elevation",
+  "focus": "New angles and Tri-Sets for hypertrophy",
+  "recovery_rule": "1\u20132 RIR",
+  "steps_target": "8\u201310k",
+  "daily_cardio_bookends": {
+    "pre_workout": "15-Minute Run (Moderate pace, spike dopamine)",
+    "post_workout": "15-Minute Walk (De-escalation, flush cortisol)"
+  },
+  "day_rotation": [
+    1,
+    1,
+    2,
+    3,
+    4,
+    1,
+    1
+  ],
+  "warmup": {
+    "title": "5-Min Athletic Warm-Up",
+    "items": [
+      {
+        "name": "World's Greatest Stretch",
+        "detail": "5 reps/side. Opens hips, thoracic spine, and chest."
+      },
+      {
+        "name": "90/90 Hip Flows",
+        "detail": "30 seconds. Restores hip rotation."
+      },
+      {
+        "name": "Arm Walkouts to Plank",
+        "detail": "5 reps. Wakes up core and shoulder stability."
+      }
+    ]
+  },
+  "recovery": [
+    {
+      "icon": "\ud83e\udde0",
+      "title": "Creatine",
+      "color": "volt",
+      "desc": "5g daily with warm water or tea."
+    },
+    {
+      "icon": "\ud83c\udf19",
+      "title": "Magnesium",
+      "color": "blue",
+      "desc": "200\u2013400mg Bisglycinate, 45 min before bed."
+    },
+    {
+      "icon": "\ud83e\udd69",
+      "title": "Protein Anchor",
+      "color": "amber",
+      "desc": "20\u201330g fast protein before touching sugar."
+    },
+    {
+      "icon": "\ud83e\uddc2",
+      "title": "Adrenal Salt",
+      "color": "pink",
+      "desc": "Warm water + sea salt pinch when dragging."
+    }
+  ],
+  "tips": [
+    "Sets 1 and 2 stay at 1\u20132 RIR. Only the last set on machines goes to failure.",
+    "Tri-Sets: Move from exercise 1 to 2 to 3 with minimal rest, then rest 60-90s before repeating.",
+    "Sleep is the training session. When work stress spikes, protect it."
+  ],
+  "days": [
+    {
+      "day_number": 1,
+      "title": "Upper Power",
+      "pill": "Heavy",
+      "color": "red",
+      "targets": [
+        "Upper Chest",
+        "Mid-Back",
+        "Shoulders",
+        "Arms"
+      ],
+      "exercises": [
+        {
+          "name": "Incline Dumbbell Press (30\u00b0)",
+          "sets": 3,
+          "reps": "6\u20138",
+          "rest": 120,
+          "notes": "Main anchor lift. Deep stretch, set 3 to failure."
+        },
+        {
+          "name": "Chest-Supported Machine Row",
+          "sets": 3,
+          "reps": "10",
+          "rest": 0,
+          "notes": "Zero lower back strain."
+        },
+        {
+          "name": "Flat Dumbbell Flyes",
+          "sets": 3,
+          "reps": "12",
+          "rest": 60,
+          "notes": "Replaces Cable Crossover."
+        },
+        {
+          "name": "Seated DB Hammer Curls",
+          "sets": 3,
+          "reps": "12",
+          "rest": 0,
+          "notes": "Palms facing each other."
+        },
+        {
+          "name": "Lying DB Tricep Extensions",
+          "sets": 3,
+          "reps": "15",
+          "rest": 0,
+          "notes": "Skullcrushers style."
+        },
+        {
+          "name": "Seated DB Wrist Curls",
+          "sets": 3,
+          "reps": "15",
+          "rest": 60,
+          "notes": "Forearm mass. Final set to failure."
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "title": "Machine Lower",
+      "pill": "Drive",
+      "color": "amber",
+      "targets": [
+        "Quads",
+        "Hamstrings",
+        "Glutes",
+        "Calves"
+      ],
+      "exercises": [
+        {
+          "name": "Leg Press (Quad Sweep Focus)",
+          "sets": 3,
+          "reps": "8\u201310",
+          "rest": 120,
+          "notes": "Feet low/narrow. 3s down, 1s pause."
+        },
+        {
+          "name": "Seated Leg Curls",
+          "sets": 3,
+          "reps": "10",
+          "rest": 0,
+          "notes": "Hamstring isolation."
+        },
+        {
+          "name": "Leg Extensions",
+          "sets": 3,
+          "reps": "12",
+          "rest": 60,
+          "notes": "Take set 3 to failure."
+        },
+        {
+          "name": "Machine Glute Kickback",
+          "sets": 3,
+          "reps": "10",
+          "rest": 0,
+          "notes": "Supported kickback."
+        },
+        {
+          "name": "Seated Calf Raises",
+          "sets": 3,
+          "reps": "15",
+          "rest": 0,
+          "notes": "Deep stretch."
+        },
+        {
+          "name": "Ab Crunch Machine",
+          "sets": 3,
+          "reps": "15",
+          "rest": 60,
+          "notes": "Spine supported. Final set to failure."
+        },
+        {
+          "name": "Seated Hip Abductor",
+          "sets": 3,
+          "reps": "15",
+          "rest": 0,
+          "notes": "Lean forward."
+        },
+        {
+          "name": "Seated Hip Adductor",
+          "sets": 3,
+          "reps": "15",
+          "rest": 60,
+          "notes": "Set 3 to failure."
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "title": "Upper Volume",
+      "pill": "Pump",
+      "color": "volt",
+      "targets": [
+        "Lats",
+        "Shoulders",
+        "Arms"
+      ],
+      "exercises": [
+        {
+          "name": "Neutral (V-Bar) Lat Pulldown",
+          "sets": 3,
+          "reps": "8",
+          "rest": 90,
+          "notes": "Lower lat focus, shoulder safe. Set 3 to failure."
+        },
+        {
+          "name": "Chest-Supported DB Row",
+          "sets": 3,
+          "reps": "12",
+          "rest": 0,
+          "notes": "Wide elbows."
+        },
+        {
+          "name": "Seated DB Lateral Raises",
+          "sets": 3,
+          "reps": "15",
+          "rest": 0,
+          "notes": "Strict form."
+        },
+        {
+          "name": "Seated DB Rear Delt Flyes",
+          "sets": 3,
+          "reps": "15",
+          "rest": 60,
+          "notes": "Cap the shoulder joint. Final set to failure."
+        },
+        {
+          "name": "Machine Preacher Curls",
+          "sets": 3,
+          "reps": "12",
+          "rest": 0,
+          "notes": "Lock arms in pad."
+        },
+        {
+          "name": "Tricep Press Machine",
+          "sets": 3,
+          "reps": "12",
+          "rest": 60,
+          "notes": "Push straight down, set 3 to failure."
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "title": "Metabolic Crucible",
+      "pill": "Metabolic",
+      "color": "blue",
+      "targets": [
+        "Athleticism",
+        "Core",
+        "Conditioning"
+      ],
+      "intro": "Heavy carries and lunges. Keep moving to spike your heart rate safely.",
+      "exercises": [
+        {
+          "name": "Heavy DB Swings",
+          "sets": 4,
+          "reps": "12",
+          "rest": 60,
+          "notes": "Increased to 4 sets for higher metabolic output."
+        },
+        {
+          "name": "DB Reverse Lunges",
+          "sets": 3,
+          "reps": "10",
+          "rest": 0,
+          "notes": "Knee-safe unilateral work."
+        },
+        {
+          "name": "Leg Extensions",
+          "sets": 3,
+          "reps": "15",
+          "rest": 0,
+          "notes": "Set 3 to failure."
+        },
+        {
+          "name": "Standing DB Calf Raises",
+          "sets": 3,
+          "reps": "15",
+          "rest": 60,
+          "notes": "Massive lower leg pump."
+        },
+        {
+          "name": "Single-Arm DB Suitcase Carries",
+          "sets": 3,
+          "reps": "20 paces",
+          "rest": 0,
+          "notes": "Brutal oblique work."
+        },
+        {
+          "name": "Mat Core Series",
+          "sets": 3,
+          "reps": "15ea/15/30s",
+          "rest": 90,
+          "notes": "Deadbugs/V-Ups/Side Planks. Continuous control.",
+          "log_weight": false
+        },
+        {
+          "name": "Seated DB Upright Rows",
+          "sets": 3,
+          "reps": "15",
+          "rest": 45,
+          "notes": "Pull elbows high. Set 3 to failure."
+        }
+      ]
+    }
+  ]
+}
