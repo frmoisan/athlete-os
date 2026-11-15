@@ -275,7 +275,12 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .warmup-strip.open .warmup-toggle svg { transform: rotate(180deg); }
 .warmup-body { display: none; padding: 0 16px 14px; }
 .warmup-strip.open .warmup-body { display: block; }
-.warmup-item { font-size: 13px; color: var(--muted); padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.06); line-height: 1.45; }
+.warmup-item { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.06); line-height: 1.45; }
+.wu-ico { flex: none; width: 46px; height: 46px; color: var(--cyan); border: 1px solid rgba(0,240,255,0.28); background: rgba(0,240,255,0.06); }
+.wu-ico svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.wu-ico .gnd { stroke: var(--magenta); stroke-width: 1.4; opacity: .7; }
+.wu-ico .hd { fill: currentColor; stroke: none; }
+.wu-ico .mv { stroke: var(--magenta); stroke-width: 1.6; }
 .warmup-item strong { color: var(--text); display: block; font-size: 14px; font-weight: 600; }
 
 /* Exercise list */
@@ -360,12 +365,43 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .timer-btn:active { background: var(--magenta); color: var(--bg); }
 
 /* Superset + special blocks */
-.ss-block { border-left: 2px solid var(--magenta); padding-left: 10px; display: flex; flex-direction: column; gap: 8px; }
+/* A superset / tri-set is one panel: a header, then its exercises as rows inside it. */
+.ss-card { --edge: rgba(255,43,214,0.42); scroll-margin: 96px 0 200px; transition: opacity .2s; }
+.ss-card.expanded { --edge: rgba(255,43,214,0.75); --fill: #100e22; }
+.ss-card.done:not(.expanded) { opacity: .62; }
+.ss-top {
+  width: 100%; cursor: pointer; text-align: left; background: none; border: none; color: var(--text); font: inherit;
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px 10px 16px;
+}
+.ss-top-main { flex: 1; min-width: 0; }
+.ss-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+.ss-card.expanded > .ss-top .ex-chev { transform: rotate(180deg); color: var(--magenta); }
+.ex-card.in-ss { border-top: 1px solid rgba(255,255,255,0.08); scroll-margin: 150px 0 200px; }
+.ex-card.in-ss.done:not(.expanded) { opacity: 1; }
+.ex-card.in-ss .ex-detail { border-top: none; padding-top: 0; }
+.ex-card.in-ss .ex-open { padding-right: 16px; }
 .ss-header, .special-header {
   font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
   padding: 2px 0 0; line-height: 1.4;
 }
 .ss-header { color: var(--magenta); }
+.flow-now { margin-top: 10px; padding: 10px 12px; border-left: 3px solid var(--cyan); background: rgba(0,240,255,0.08); font-size: 14px; line-height: 1.45; color: var(--text); }
+.flow-now.hard { border-left-color: var(--red); background: var(--red-dim); }
+.flow-now b { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--cyan); margin-bottom: 2px; }
+.flow-now.hard b { color: var(--red); }
+.flow-list { display: grid; gap: 2px; margin: 12px 0 4px; font-family: var(--mono); font-size: 12px; }
+.flow-row { display: flex; gap: 10px; padding: 5px 8px; color: var(--muted); border-left: 2px solid var(--border); }
+.flow-row span { flex: none; min-width: 40px; font-variant-numeric: tabular-nums; }
+.flow-row.hard { border-left-color: var(--red); color: var(--text); }
+.flow-row.past { opacity: .38; }
+.flow-row.now { background: rgba(0,240,255,0.12); color: var(--cyan); }
+.flow-row.now.hard { background: var(--red-dim); color: var(--red); }
+.dock-wrap.hard:not(.go) .dock-time, .dock-wrap.hard:not(.go) .dock-label { color: var(--red); }
+.map-row { display: flex; padding-top: 12px; }
+#screen-map { padding: var(--safe-top) 0 calc(var(--nav-h) + var(--safe-bottom)); overflow: hidden; }
+#map-frame { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
+#map-frame[hidden] { display: none; }
+#map-empty { padding: 0 var(--gutter); }
 .special-block { display: flex; flex-direction: column; gap: 8px; }
 .special-block.core .special-header { color: var(--cyan); }
 .special-block.cardio .special-header { color: var(--magenta); }
@@ -552,6 +588,7 @@ body.timer-on::after {
 
   <div class="section-label" id="split-label">Your Split</div>
   <div class="day-cards" id="day-cards"></div>
+  <div class="map-row"><button class="ghost-btn" onclick="nav('mindset')">Mindset &amp; Nutrition ▸</button></div>
 
   <div id="program-pick" hidden>
     <div class="section-label">Program</div>
@@ -714,6 +751,18 @@ body.timer-on::after {
   <button class="ghost-btn print-btn" onclick="printWorkout()">Print / Save as PDF</button>
 </div>
 
+<!-- ═══════════ SCREEN 5: MUSCLE MAP (the program's "muscle_map" page, in a frame) ═══════════ -->
+<div id="screen-map" class="screen">
+  <iframe id="map-frame" title="Muscle map" hidden></iframe>
+  <div id="map-empty" hidden>
+    <div class="page-header">
+      <div class="kicker" style="color:var(--magenta)">Muscle map</div>
+      <div class="page-title">No map for<br>this program</div>
+      <div class="page-sub">Add "muscle_map": "your-page.html" to the program file to show it here.</div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════ REST TIMER DOCK ═══════════ -->
 <div class="dock-wrap" id="dock" hidden>
   <div class="dock cut" role="timer" aria-live="off">
@@ -742,9 +791,9 @@ body.timer-on::after {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 12h5l2.5-7 5 14 2.5-7h5"/></svg>
     Check-In
   </button>
-  <button class="nav-btn" id="nav-mindset" onclick="nav('mindset')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 2.5l8.5 4.75v9.5L12 21.5l-8.5-4.75v-9.5z"/><path d="M12 9v6M9 12h6"/></svg>
-    Mindset
+  <button class="nav-btn" id="nav-map" onclick="nav('map')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="12" cy="4.5" r="2"/><path d="M5 9h14M9 9v6l-1 6.5M15 9v6l1 6.5M9 15h6"/></svg>
+    Muscles
   </button>
 </nav>
 
@@ -820,11 +869,12 @@ function indexExercises(program) {
           order.push(e.id);
         });
       } else {
-        const kind = block.type === 'main' ? 'main' : block.type;   // main | core | cardio | bw
-        const sets = parseSetCount(block.sets) || +block.weightSets || 0;
-        EX[block.id] = { ex: block, day: day.day, kind, sets,
-          restSec: parseRest(block.rest) || parseRest(block.note), blockRest: 0,
-          timerSec: sets ? 0 : parseMinutes(block.sets), blockIds: [block.id], isLastInBlock: true };
+        const flow = block.type === 'flow' ? (block.segments || []) : null;   // guided timer segments
+        const kind = flow ? 'cardio' : block.type;   // main | core | cardio | bw
+        const sets = flow ? 0 : parseSetCount(block.sets) || +block.weightSets || 0;
+        EX[block.id] = { ex: block, day: day.day, kind, sets, flow,
+          restSec: flow ? 0 : parseRest(block.rest) || parseRest(block.note), blockRest: 0,
+          timerSec: sets || flow ? 0 : parseMinutes(block.sets), blockIds: [block.id], isLastInBlock: true };
         order.push(block.id);
       }
     });
@@ -899,8 +949,38 @@ function bookend(text, header) {
   return { type: 'cardio', header, name, sets: mins ? mins[1] + ' Minutes' : '', note: m ? m[2] : '' };
 }
 
-// A timed routine with no days (the cardio flush): one day, one timer per time block.
+// "Minutes 3:00 – 3:30" -> one timed segment. Used by the guided timer (bike intervals).
+function flowSegments(data) {
+  return ((data && data.exercises) || []).map(e => {
+    const m = /(\d+):(\d+)\s*[–-]\s*(\d+):(\d+)/.exec(String(e.time_block || ''));
+    return {
+      name: e.name || '',
+      sec: m ? (+m[3] * 60 + +m[4]) - (+m[1] * 60 + +m[2]) : 0,
+      text: e.execution || '',
+      hard: /hard|push|sprint|max/i.test(e.name || '')
+    };
+  }).filter(s => s.sec > 0);
+}
+
+// One card whose single Start button runs every segment back to back.
+function flowBlock(data, header) {
+  const segs = flowSegments(data);
+  if (!segs.length) return null;
+  const total = segs.reduce((a, s) => a + s.sec, 0);
+  return {
+    type: 'flow', header, name: String(data.program || 'Intervals'),
+    sets: Math.round(total / 60) + ' min · ' + segs.length + ' segments · hands-free timer',
+    note: data.focus || '', segments: segs
+  };
+}
+
+// A timed routine with no days: one day. Whole-minute blocks (the cardio flush) get one
+// card and timer each; anything with shorter segments (bike intervals) gets the guided timer.
 function flowDay(data, name) {
+  if (flowSegments(data).some(s => s.sec % 60)) {
+    return { day: 1, name, pill: 'Flow', color: 'blue', targets: data.focus || '',
+      exercises: [flowBlock(data, '🚴 Guided session')] };
+  }
   const blocks = [];
   (data.exercises || []).forEach(e => {
     const tb = String(e.time_block || '');
@@ -923,7 +1003,8 @@ function flowDay(data, name) {
   };
 }
 
-function normalizeProgram(data, file) {
+// extras: { "bike-intervals.json": <that file's content> } for days that name a "finisher".
+function normalizeProgram(data, file, extras) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
   if (data.program && typeof data.program === 'object') return data;   // already in the page's layout
 
@@ -940,8 +1021,12 @@ function normalizeProgram(data, file) {
     color: d.color || 'blue',
     targets: Array.isArray(d.targets) ? d.targets.join(' · ') : (d.targets || ''),
     intro: d.intro || '',
+    // "finisher": "bike-intervals.json" swaps the post-workout card for that guided session.
     exercises: [bookend(book.pre_workout, '🏃 Pre-Workout')]
-      .concat(simpleBlocks(d.exercises), [bookend(book.post_workout, '🚶 Post-Workout')])
+      .concat(simpleBlocks(d.exercises), [
+        (d.finisher && extras && extras[d.finisher] && flowBlock(extras[d.finisher], '🚴 Finisher')) ||
+        bookend(book.post_workout, '🚶 Post-Workout')
+      ])
       .filter(Boolean)
   }));
   const flow = !days.length && Array.isArray(data.exercises) && data.exercises.length;
@@ -953,7 +1038,8 @@ function normalizeProgram(data, file) {
       phase, name,
       subtitle: flow ? (data.schedule || []).join(' · ') : [cut > 0 ? name : '', data.focus].filter(Boolean).join(' — '),
       recovery_rule: data.recovery_rule || '',
-      steps_target: data.steps_target || ''
+      steps_target: data.steps_target || '',
+      muscle_map: data.muscle_map || ''
     },
     day_rotation: data.day_rotation || [],
     warmup: data.warmup || {},
@@ -1011,7 +1097,17 @@ async function fetchProgram() {
     console.warn(entry.file + ' fetch failed:', e.message, '— falling back to cache');
     raw = readCache(key);
   }
-  const program = normalizeProgram(raw, entry.file);
+
+  // Sessions that some days call as their finisher (bike intervals).
+  const extras = {};
+  const wanted = [...new Set(((raw && raw.days) || []).map(d => d && d.finisher).filter(f => programList([{ file: f }]).length))];
+  await Promise.all(wanted.map(async f => {
+    const fkey = CACHE_KEY + ':' + f;
+    try { extras[f] = await fetchJSON(PROGRAM_DIR + encodeURIComponent(f)); writeCache(fkey, extras[f]); }
+    catch (e) { console.warn(f + ' fetch failed:', e.message, '— falling back to cache'); extras[f] = readCache(fkey); }
+  }));
+
+  const program = normalizeProgram(raw, entry.file, extras);
   return usable(program) ? program : null;
 }
 
@@ -1115,10 +1211,21 @@ function showScreen(name) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const screen = $('screen-' + name);
   screen.classList.add('active');
-  $('nav-' + name).classList.add('active');
+  const tab = $('nav-' + name);          // Mindset has no tab: it opens from the Home screen
+  if (tab) tab.classList.add('active');
+  if (name === 'map') loadMap();
   if (name !== 'workout') screen.scrollTop = 0;
   activeScreen = name;
   setWake(name === 'workout' || !!timer);
+}
+
+// The muscle map page loads the first time the tab is opened.
+let MAP_URL = '';
+function loadMap() {
+  const frame = $('map-frame');
+  frame.hidden = !MAP_URL;
+  $('map-empty').hidden = !!MAP_URL;
+  if (MAP_URL && frame.getAttribute('src') !== MAP_URL) frame.src = MAP_URL;
 }
 
 function nav(name) {
@@ -1156,6 +1263,9 @@ function renderHome() {
   const days = PROGRAM.days;
   $('split-label').textContent = days.length > 1 ? 'Your ' + days.length + '-Day Split' : 'Your Session';
   $('recovery-label').hidden = !(PROGRAM.recovery || []).length;
+  // "muscle_map": "muscle-map-4-2.html" in a program file is the page shown in the Muscles tab.
+  MAP_URL = /^[\w.\-]+\.html$/i.test(meta.muscle_map || '') ? meta.muscle_map : '';
+  if (MAP_URL) fetch(MAP_URL).catch(() => {});   // the fetch saves it for offline
   renderProgramPicker();
 
   $('day-cards').innerHTML = days.map(d => `
@@ -1182,10 +1292,28 @@ function renderHome() {
   updateSoundBtn();
 }
 
+// Small pictograms for the warm-up moves, picked by the item's name.
+const WU_GROUND = '<path class="gnd" d="M3 43H45"/>';
+const WU_ICONS = [
+  // World's Greatest Stretch: deep lunge, one hand down, one arm reaching up
+  [/greatest|lunge/i, '<circle class="hd" cx="35" cy="14" r="3.6"/><path d="M22 31L31 20M31 20L27 5M31 20L29 42M22 31L35 30L35 42M22 31L11 38L4 42"/><path class="mv" d="M21 8Q24 3 29 3"/>'],
+  // 90/90 Hip Flows: seated tall, both knees bent at right angles on the floor
+  [/90|hip/i, '<circle class="hd" cx="23" cy="9" r="3.6"/><path d="M23 14V32M23 18L31 27M23 18L15 27M23 32L37 33L31 42M23 32L9 33L4 42"/><path class="mv" d="M39 24Q43 29 40 35M5 24Q2 29 5 35"/>'],
+  // Arm Walkouts to Plank: straight-arm plank
+  [/walkout|plank|push/i, '<circle class="hd" cx="39" cy="20" r="3.6"/><path d="M35 25L20 30L6 35L4 42M35 25L36 42"/><path class="mv" d="M25 40H31M29 37L32 40L29 43"/>'],
+  // Pogo hops and other jumps
+  [/pogo|hop|jump|skip/i, '<circle class="hd" cx="24" cy="8" r="3.6"/><path d="M24 13V26M24 16L17 22M24 16L31 22M24 26L20 33L22 38M24 26L28 33L26 38"/><path class="mv" d="M14 40H18M30 40H34M10 36V30M38 36V30"/>']
+];
+const WU_DEFAULT = '<circle class="hd" cx="24" cy="8" r="3.6"/><path d="M24 13V28M24 16L15 8M24 16L33 8M24 28L18 42M24 28L30 42"/>';
+function warmupIcon(name) {
+  const hit = WU_ICONS.find(i => i[0].test(name || ''));
+  return '<span class="wu-ico" aria-hidden="true"><svg viewBox="0 0 48 48">' + WU_GROUND + (hit ? hit[1] : WU_DEFAULT) + '</svg></span>';
+}
+
 function warmupItemsHTML() {
   const w = PROGRAM.warmup || {};
   return (w.items || []).map((it, i) =>
-    `<div class="warmup-item"><strong>${i + 1}. ${it.name}</strong>${it.detail || ''}</div>`
+    `<div class="warmup-item">${warmupIcon(it.name)}<div><strong>${i + 1}. ${it.name}</strong>${it.detail || ''}</div></div>`
   ).join('');
 }
 
@@ -1244,11 +1372,10 @@ function renderExercises(dayNum) {
   let html = '';
   day.exercises.forEach(block => {
     if (block.type === 'superset') {
-      html += `<div class="ss-block"><div class="ss-header">${block.label || 'Superset'}</div>` +
-        (block.exercises || []).map(e => renderCard(e.id)).join('') + `</div>`;
+      html += renderSuperset(block);
     } else if (block.type === 'core') {
       html += `<div class="special-block core"><div class="special-header">${block.header || '🛡️ 10-Min Athletic Abs Finisher'}</div>${renderCard(block.id)}</div>`;
-    } else if (block.type === 'cardio') {
+    } else if (block.type === 'cardio' || block.type === 'flow') {
       html += `<div class="special-block cardio"><div class="special-header">${block.header || '🏃 15-Min Aerobic Flush'}</div>${renderCard(block.id)}</div>`;
     } else if (EX[block.id]) {
       html += renderCard(block.id);
@@ -1274,7 +1401,25 @@ function fmtDate(iso) {
   return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1] - 1] + ' ' + +p[2];
 }
 
-function renderCard(id) {
+// One panel for the whole superset: tap the header (or any exercise) to open or close all of it.
+function renderSuperset(block) {
+  const list = (block.exercises || []).filter(e => EX[e.id]);
+  if (!list.length) return '';
+  const first = EX[list[0].id], ds = dayState(first.day);
+  const rounds = Math.max(0, ...list.map(e => EX[e.id].sets));
+  const roundsDone = Math.min(...list.map(e => ds[e.id] ? EX[e.id].sets : Math.min(+ds['s_' + e.id] || 0, EX[e.id].sets)));
+  const allDone = list.every(e => ds[e.id]);
+  const open = list.some(e => expanded.has(e.id));
+  const sub = rounds ? rounds + ' rounds · ' + (first.blockRest ? 'rest ' + first.blockRest + 's after the last move' : 'no rest between moves') : '';
+  return `<div class="ss-card cut ${open ? 'expanded' : ''} ${allDone ? 'done' : ''}">
+    <button class="ss-top" onclick="toggleExpand('${list[0].id}')" aria-expanded="${open}">
+      <div class="ss-top-main"><div class="ss-header">${block.label || 'Superset'}</div>${sub ? `<div class="ss-sub">${sub}</div>` : ''}</div>
+      ${rounds && !allDone && roundsDone > 0 ? `<div class="ex-progress">${roundsDone}/${rounds}</div>` : ''}
+      ${CHEV_SVG}
+    </button>` + list.map(e => renderCard(e.id, true)).join('') + `</div>`;
+}
+
+function renderCard(id, inBlock) {
   const m = EX[id], ex = m.ex, ds = dayState(m.day);
   const done = !!ds[id];
   const n = m.sets;
@@ -1308,12 +1453,21 @@ function renderCard(id) {
       detail += `<div class="last-line">LAST · <b>${last.w.slice(0, wCount).map(v => v || '—').join(' / ')}</b> lbs${last.d ? ' · ' + fmtDate(last.d) : ''}</div>`;
     }
   }
+  if (m.flow && m.flow.length) {
+    const run = timer && timer.flow && timer.flow.id === id && !timer.fired ? timer.flow.i : -1;
+    const total = m.flow.reduce((a, s) => a + s.sec, 0);
+    const cur = run >= 0 ? m.flow[run] : null;
+    detail += `<div class="flow-now ${cur && cur.hard ? 'hard' : ''}" id="flow-now-${id}" ${cur ? '' : 'hidden'}>${cur ? '<b>' + cur.name + '</b>' + cur.text : ''}</div>` +
+      `<button class="timer-btn" onclick="${run >= 0 ? 'clearTimer()' : `startFlow('${id}')`}">${run >= 0 ? 'Stop session' : 'Start ' + fmtClock(total) + ' guided timer'}</button>` +
+      `<div class="flow-list">` + m.flow.map((s, i) =>
+        `<div class="flow-row ${s.hard ? 'hard' : ''} ${i < run ? 'past' : ''} ${i === run ? 'now' : ''}"><span>${fmtClock(s.sec)}</span>${s.name}</div>`).join('') + `</div>`;
+  }
   if (m.timerSec) {
     detail += `<button class="timer-btn" onclick="startTimer(${m.timerSec},'${m.kind === 'cardio' ? 'Cardio' : 'Timer'}','${id}')">Start ${fmtClock(m.timerSec)} timer</button>`;
   }
 
   return `
-  <div class="ex-card cut k-${m.kind} ${done ? 'done' : ''} ${open ? 'expanded' : ''}" id="card-${id}">
+  <div class="ex-card ${inBlock ? 'in-ss' : 'cut'} k-${m.kind} ${done ? 'done' : ''} ${open ? 'expanded' : ''}" id="card-${id}">
     <div class="ex-row">
       <button class="ex-check" onclick="tapCheck('${id}')" aria-label="Mark ${ex.name.replace(/"/g, '')} ${done ? 'not done' : 'done'}" aria-pressed="${done}"><i>${CHECK_SVG}</i></button>
       <button class="ex-open" onclick="toggleExpand('${id}')" aria-expanded="${open}">
@@ -1322,7 +1476,7 @@ function renderCard(id) {
           <div class="ex-sets">${metaLine}</div>
         </div>
         ${n > 0 && !done && sdone > 0 ? `<div class="ex-progress">${sdone}/${n}</div>` : ''}
-        ${CHEV_SVG}
+        ${inBlock ? '' : CHEV_SVG}
       </button>
     </div>
     <div class="ex-detail">${detail}</div>
@@ -1334,8 +1488,10 @@ function renderCard(id) {
 // ══════════════════════════════════════
 function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
 
+// A superset / tri-set opens and closes as one block.
 function toggleExpand(id) {
-  if (expanded.has(id)) expanded.delete(id); else expanded.add(id);
+  const open = !expanded.has(id);
+  EX[id].blockIds.forEach(x => { if (open) expanded.add(x); else expanded.delete(x); });
   renderExercises(EX[id].day);
 }
 
@@ -1462,13 +1618,14 @@ function primeAudio() {
     if (actx.state === 'suspended') actx.resume();
   } catch (e) {}
 }
-function beep() {
+// notes: [[start offset in s, frequency in Hz], ...]
+function tones(notes) {
   if (!prefs.sound || !actx) return;
   try {
     const t = actx.currentTime;
-    [0, 0.2, 0.4].forEach((o, i) => {
+    notes.forEach(([o, hz]) => {
       const osc = actx.createOscillator(), g = actx.createGain();
-      osc.type = 'square'; osc.frequency.value = i === 2 ? 1320 : 880;
+      osc.type = 'square'; osc.frequency.value = hz;
       g.gain.setValueAtTime(0.0001, t + o);
       g.gain.exponentialRampToValueAtTime(0.18, t + o + 0.01);
       g.gain.exponentialRampToValueAtTime(0.0001, t + o + 0.16);
@@ -1476,6 +1633,66 @@ function beep() {
       osc.start(t + o); osc.stop(t + o + 0.18);
     });
   } catch (e) {}
+}
+function beep() { tones([[0, 880], [0.2, 880], [0.4, 1320]]); }
+
+// ── Guided timer: runs a list of segments back to back (bike intervals) ──
+// Each segment ends where the previous one ended plus its length, on the wall clock,
+// so the session stays on schedule even if the phone throttles the page.
+function startFlow(id) {
+  const m = EX[id];
+  if (!m || !m.flow || !m.flow.length) return;
+  primeAudio();
+  clearTimeout(timerHide);
+  const segs = m.flow.map(s => ({ name: s.name, sec: s.sec, hard: s.hard, text: s.text }));
+  timer = { end: Date.now() + segs[0].sec * 1000, total: segs[0].sec, label: '1/' + segs.length, name: segs[0].name,
+    fired: false, flow: { id, i: 0, segs, title: m.ex.name } };
+  persistTimer();
+  buzz(180);
+  tones(segs[0].hard ? [[0, 1320], [0.18, 1320]] : [[0, 660]]);
+  showDock();
+  if (WORKOUTS[currentDay]) renderExercises(currentDay);
+}
+function stepFlow() {
+  const f = timer.flow;
+  let moved = false;
+  while (timer.end <= Date.now() && f.i < f.segs.length - 1) {
+    f.i++;
+    timer.total = f.segs[f.i].sec;
+    timer.end += timer.total * 1000;
+    moved = true;
+  }
+  if (!moved) return;
+  const s = f.segs[f.i];
+  timer.label = (f.i + 1) + '/' + f.segs.length;
+  timer.name = s.name;
+  persistTimer();
+  if (timer.end > Date.now()) {            // two high beeps = push, one low beep = ease off
+    buzz(s.hard ? [300, 90, 300] : 200);
+    tones(s.hard ? [[0, 1320], [0.18, 1320]] : [[0, 660]]);
+  }
+  paintFlow();
+}
+// Move the highlight in the card without redrawing the list.
+function paintFlow() {
+  const f = timer && timer.flow;
+  if (!f) return;
+  const card = $('card-' + f.id);
+  if (!card) return;
+  card.querySelectorAll('.flow-row').forEach((row, i) => {
+    row.classList.toggle('past', i < f.i);
+    row.classList.toggle('now', i === f.i);
+  });
+  const now = $('flow-now-' + f.id), s = f.segs[f.i];
+  if (now) { now.hidden = false; now.classList.toggle('hard', !!s.hard); now.innerHTML = '<b>' + s.name + '</b>' + (s.text || ''); }
+}
+function finishFlow(f) {
+  const m = EX[f.id];
+  if (!m) return;
+  const ds = dayState(m.day);
+  if (!ds[f.id]) { ds[f.id] = true; saveState(); advance(f.id); }
+  if (currentDay === m.day) renderExercises(m.day);
+  updateHomeProgress();
 }
 
 function startTimer(sec, label, id) {
@@ -1497,13 +1714,17 @@ function showDock() {
 }
 function tickTimer() {
   if (!timer) return;
+  if (timer.flow && !timer.fired) stepFlow();
   const remMs = timer.end - Date.now();
+  $('dock').classList.toggle('hard', !!(timer.flow && timer.flow.segs[timer.flow.i].hard));
   if (remMs <= 0) {
     if (!timer.fired) {
       timer.fired = true; persistTimer();
       const late = Math.round(-remMs / 1000);
       $('dock').classList.add('go');
-      $('dock-label').textContent = (timer.label === 'Rest' ? 'Rest over' : 'Time') + (timer.name ? ' · ' + timer.name : '');
+      if (timer.flow) finishFlow(timer.flow);
+      $('dock-label').textContent = timer.flow ? 'Done · ' + timer.flow.title :
+        (timer.label === 'Rest' ? 'Rest over' : 'Time') + (timer.name ? ' · ' + timer.name : '');
       $('dock-time').textContent = late > 3 ? 'GO +' + fmtClock(late) : 'GO';
       $('dock-bar').style.transform = 'scaleX(0)';
       $('dock-skip').textContent = 'OK';
@@ -1528,18 +1749,25 @@ function adjustTimer(delta) {
 }
 function clearTimer() {
   clearInterval(timerInt); clearTimeout(timerHide);
+  const wasFlow = !!(timer && timer.flow);
   timer = null;
   try { localStorage.removeItem(TIMER_KEY); } catch (e) {}
   $('dock').hidden = true;
+  $('dock').classList.remove('hard');
   document.body.classList.remove('timer-on');
   setWake(activeScreen === 'workout');
+  if (wasFlow && WORKOUTS[currentDay] && $('ex-list')) renderExercises(currentDay);   // card back to "Start"
 }
 function persistTimer() { try { localStorage.setItem(TIMER_KEY, JSON.stringify(timer)); } catch (e) {} }
 function restoreTimer() {
   try {
     const t = JSON.parse(localStorage.getItem(TIMER_KEY) || 'null');
     // Only bring back a timer that is still running or ended in the last 2 minutes.
-    if (t && t.end && !t.fired && t.end - Date.now() > -120000) { timer = t; showDock(); }
+    const tail = t && t.flow ? t.flow.segs.slice(t.flow.i + 1).reduce((a, s) => a + s.sec, 0) * 1000 : 0;   // segments still to come
+    if (t && t.end && !t.fired && t.end + tail - Date.now() > -120000) {
+      timer = t; showDock();
+      if (t.flow && WORKOUTS[currentDay]) renderExercises(currentDay);
+    }
     else localStorage.removeItem(TIMER_KEY);
   } catch (e) {}
 }

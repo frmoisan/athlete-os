@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 4.2 Muscle Map</title>
+<meta name="theme-color" content="#07080c">
+<style>
+/* Same local font files as the app, so this page works offline. */
+@font-face { font-family: 'Chakra Petch'; font-weight: 400; font-style: normal; font-display: swap; src: url(fonts/chakra-petch-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Chakra Petch'; font-weight: 600; font-style: normal; font-display: swap; src: url(fonts/chakra-petch-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Chakra Petch'; font-weight: 700; font-style: normal; font-display: swap; src: url(fonts/chakra-petch-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 100 800; font-style: normal; font-display: swap; src: url(fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations'), url(fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2'); }
+:root {
+  /* Layout: combined body map + readout first, then one small map per day, then the sets table.
+     Single theme (Athlete OS neon noir). Day colours are the app's day accents. */
+  color-scheme: dark;
+  --bg: #07080c;
+  --panel: #0d1017;
+  --line: #1c2431;
+  --body: #1a2130;
+  --outline: #50607a;
+  --idle: #2a3446;
+  --ink: #e6f0f4;
+  --mute: #8a98aa;
+  --accent: #ff2bd6;
+  --d1: #ff4d6d;
+  --d2: #ffb000;
+  --d3: #c6ff3d;
+  --d4: #00d9ff;
+  --display: "Chakra Petch", "Trebuchet MS", "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--display); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 28px 16px 56px; display: flex; flex-direction: column; gap: 36px; }
+header { display: flex; flex-direction: column; gap: 12px; }
+.back { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid var(--line);
+  color: var(--ink); text-decoration: none; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.back:active { border-color: var(--d4); color: var(--d4); }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+h1 { margin: 0; font-size: clamp(30px, 7vw, 44px); line-height: 1.05; font-weight: 700; text-wrap: balance; }
+h2 { margin: 0; font-size: 24px; line-height: 1.15; font-weight: 700; text-wrap: balance; }
+h3 { margin: 0; font-size: 17px; line-height: 1.2; font-weight: 600; }
+p { margin: 0; }
+.lede, .note { color: var(--mute); max-width: 65ch; }
+.note { font-size: 14px; }
+section { display: flex; flex-direction: column; gap: 16px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 12px; height: 12px; flex: none; display: inline-block; }
+.new { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; color: var(--ink); border: 1px solid var(--accent); padding: 0 4px; margin-left: 4px; white-space: nowrap; }
+
+.panel { background: var(--panel); border: 1px solid var(--line); padding: 16px;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px)); }
+.combo { display: grid; grid-template-columns: 1fr; gap: 18px; }
+@media (min-width: 760px) { .combo { grid-template-columns: 1.25fr 1fr; align-items: start; } }
+.bodies { display: flex; gap: 8px; justify-content: center; }
+.bodies figure { margin: 0; flex: 1 1 0; max-width: 250px; display: flex; flex-direction: column; gap: 4px; align-items: center; }
+.bodies figcaption { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+svg.body { display: block; width: 100%; height: auto; }
+.base { fill: var(--body); stroke: var(--outline); stroke-width: 1.3; stroke-linejoin: round; stroke-linecap: round; }
+.dl { fill: none; stroke: var(--outline); stroke-width: 1; stroke-linecap: round; pointer-events: none; }
+.m { stroke: var(--panel); stroke-width: 1.4; stroke-linejoin: round; cursor: pointer; outline: none; }
+.m.on, .m:focus-visible { stroke: var(--ink); stroke-width: 2.5; }
+.abline { stroke: var(--panel); stroke-width: 1.5; pointer-events: none; }
+
+.readout { display: flex; flex-direction: column; gap: 12px; }
+.readout .k { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+.readout .total { font-family: var(--mono); font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.readout ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.readout li { display: grid; grid-template-columns: 12px 1fr; gap: 10px; align-items: start; }
+.readout li .sw { margin-top: 6px; }
+.readout li b { font-weight: 600; }
+.readout li small { display: block; color: var(--mute); font-size: 14px; }
+
+.days { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 620px) { .days { grid-template-columns: 1fr 1fr; } }
+.day { display: flex; flex-direction: column; gap: 12px; }
+.day-head { display: flex; align-items: center; gap: 10px; padding-right: 14px; }
+.day-head .sw { width: 14px; height: 14px; }
+.day-head small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+.day .bodies figure { max-width: 150px; }
+.day ul { margin: 0; padding-left: 18px; color: var(--mute); font-size: 14px; display: flex; flex-direction: column; gap: 2px; }
+
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 15px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); font-weight: 700; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.n .sw { width: 9px; height: 9px; margin-right: 6px; }
+td.z { color: var(--mute); }
+td.tot { font-weight: 700; }
+tbody tr { cursor: pointer; }
+tbody tr.on td { background: #131926; }
+.heads td:first-child { font-weight: 600; white-space: nowrap; }
+.heads tr { cursor: default; }
+.st { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+.st.gap { color: var(--ink); border: 1px solid var(--accent); padding: 1px 6px; }
+footer { color: var(--mute); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; max-width: 65ch; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="defs"></defs></svg>
+
+<div class="wrap">
+  <header>
+    <a class="back" href="./">◂ Athlete OS</a>
+    <div class="eyebrow">Athlete OS · Phase 4.2 · 4-day week</div>
+    <h1>Phase 4.2 Muscle Map</h1>
+    <p class="lede">Which muscles each training day works. A muscle trained on more than one day is split into bands, one colour per day, in week order from top to bottom.</p>
+    <div class="legend" id="legend"></div>
+    <p class="note">This matches phase-4-2.json. Sets are direct working sets per week. An exercise that works two muscles is counted for both.</p>
+  </header>
+
+  <section aria-labelledby="h-week">
+    <h2 id="h-week">The whole week</h2>
+    <div class="combo">
+      <div class="panel">
+        <div class="bodies">
+          <figure><svg class="body" id="week-front" viewBox="0 0 200 420" role="img" aria-label="Front of the body, muscles coloured by training day"></svg><figcaption>Front</figcaption></figure>
+          <figure><svg class="body" id="week-back" viewBox="0 0 200 420" role="img" aria-label="Back of the body, muscles coloured by training day"></svg><figcaption>Back</figcaption></figure>
+        </div>
+      </div>
+      <div class="panel readout" id="readout" aria-live="polite"></div>
+    </div>
+    <p class="note">Tap or hover a muscle, or a row in the table below, to see its days and exercises.</p>
+  </section>
+
+  <section aria-labelledby="h-days">
+    <h2 id="h-days">Day by day</h2>
+    <div class="days" id="days"></div>
+  </section>
+
+  <section aria-labelledby="h-table">
+    <h2 id="h-table">Weekly sets per muscle</h2>
+    <div class="panel scroll">
+      <table>
+        <thead><tr><th>Muscle</th><th class="n">Sun</th><th class="n">Tue</th><th class="n">Wed</th><th class="n">Fri</th><th class="n">Week</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <p class="note">† No direct exercise. Front delts work during the 9 pressing and dip sets on Sunday. The lower back works statically during the swings on Friday, which is as much as your back rule allows.</p>
+  </section>
+
+  <section aria-labelledby="h-arms">
+    <h2 id="h-arms">Arm coverage, head by head</h2>
+    <p class="lede">Phase 4.2 closes both gaps. The two long heads respond best when the arm is stretched overhead or behind the body, so each now has one exercise that does that.</p>
+    <div class="panel scroll">
+      <table class="heads">
+        <thead><tr><th>Part</th><th>Trained by</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Triceps, lateral and medial heads</td><td>Incline and flat presses, dips, lying extensions (Sun). Overhead extension (Wed).</td><td><span class="st">✓ Covered</span></td></tr>
+          <tr><td>Triceps, long head</td><td>Seated Overhead DB Extension (Wed) trains it under a full stretch. Lying extensions (Sun) add to it.</td><td><span class="st">✓ Covered</span></td></tr>
+          <tr><td>Biceps, short head</td><td>Machine preacher curls (Wed). Incline DB curls (Sun).</td><td><span class="st">✓ Covered</span></td></tr>
+          <tr><td>Biceps, long head</td><td>Incline DB Curls (Sun), palms up with the arms hanging behind the body.</td><td><span class="st">✓ Covered</span></td></tr>
+          <tr><td>Brachialis and forearm flexors</td><td>Seated DB hammer curls (Sun), preacher curls (Wed), every row and pulldown.</td><td><span class="st">✓ Covered</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>The body drawings are simplified muscle regions, not exact anatomy. Set counts come from phase-4-2.json.</footer>
+</div>
+
+<script>
+// Inside the app's Muscles tab the app's own menu is visible, so the back link is not needed.
+if (window.self !== window.top) document.querySelector('.back').remove();
+
+const DAYS = [
+  { n: 1, dow: "Sunday", short: "Sun", title: "Upper Power", color: "#ff4d6d",
+    ex: ["Incline DB Press", "Chest-Supported Machine Row", "Flat Dumbbell Press", "Parallel Bar Dips", "Seated DB Hammer Curls", "Lying DB Tricep Extensions", "Incline DB Curls", "Standing DB Lateral Raises", "Lying Leg Curls", "Seated DB Rear Delt Flyes", "Wide-Grip Lat Pulldown", "Ab Crunch Machine", "Machine Hip Thrust", "Standing DB Calf Raises", "Bike Intervals, 18 min"] },
+  { n: 2, dow: "Tuesday", short: "Tue", title: "Machine Lower", color: "#ffb000",
+    ex: ["Leg Press", "Lying Leg Curls", "Leg Extensions", "Machine Hip Thrust", "Seated Leg Curls", "Seated Hip Abductor", "Seated Hip Adductor", "Seated Calf Raises", "Easy bike, 15 min"] },
+  { n: 3, dow: "Wednesday", short: "Wed", title: "Upper Volume", color: "#c6ff3d",
+    ex: ["Neutral (V-Bar) Lat Pulldown", "Chest-Supported DB Row", "DB Incline Fly", "Seated DB Lateral Raises", "Seated DB Rear Delt Flyes", "Machine Preacher Curls", "Seated Overhead DB Extension", "Bike Intervals, 18 min"] },
+  { n: 4, dow: "Friday", short: "Fri", title: "Metabolic Crucible", color: "#00d9ff",
+    ex: ["Heavy DB Swings", "DB Reverse Lunges", "Leg Extensions", "Standing DB Calf Raises", "Single-Arm DB Suitcase Carries", "Mat Core Series", "Lean-Away DB Lateral Raise", "Easy bike, 15 min"] }
+];
+const SURFACE = "#0d1017";
+// sets: direct working sets per day. ex: what trains it that day.
+const MUSCLES = [
+  { id: "chest_upper", name: "Upper chest", sets: { 1: 3, 3: 3 }, ex: { 1: "Incline DB Press", 3: "DB Incline Fly" } },
+  { id: "chest_mid", name: "Mid and lower chest", sets: { 1: 6 }, ex: { 1: "Flat Dumbbell Press, Parallel Bar Dips" } },
+  { id: "delt_front", name: "Front delts", indirect: true, sets: { 1: 0 }, ex: { 1: "No direct exercise. Worked by the presses and dips." } },
+  { id: "delt_side", name: "Side delts", sets: { 1: 3, 3: 3, 4: 3 }, ex: { 1: "Standing DB Lateral Raises", 3: "Seated DB Lateral Raises", 4: "Lean-Away DB Lateral Raise" } },
+  { id: "delt_rear", name: "Rear delts", sets: { 1: 3, 3: 3 }, ex: { 1: "Seated DB Rear Delt Flyes", 3: "Seated DB Rear Delt Flyes" } },
+  { id: "midback", name: "Mid-back and traps", sets: { 1: 3, 3: 3 }, ex: { 1: "Chest-Supported Machine Row", 3: "Chest-Supported DB Row" } },
+  { id: "lats", name: "Lats", sets: { 1: 6, 3: 6 }, ex: { 1: "Wide-Grip Lat Pulldown, Chest-Supported Machine Row", 3: "Neutral (V-Bar) Lat Pulldown, Chest-Supported DB Row" } },
+  { id: "biceps", name: "Biceps and brachialis", sets: { 1: 6, 3: 3 }, ex: { 1: "Seated DB Hammer Curls, Incline DB Curls", 3: "Machine Preacher Curls" } },
+  { id: "triceps", name: "Triceps", sets: { 1: 6, 3: 3 }, ex: { 1: "Lying DB Tricep Extensions, Parallel Bar Dips", 3: "Seated Overhead DB Extension" } },
+  { id: "forearms", name: "Forearms and grip", sets: { 1: 3, 4: 2 }, ex: { 1: "Seated DB Hammer Curls", 4: "Single-Arm DB Suitcase Carries" } },
+  { id: "abs", name: "Abs", sets: { 1: 3, 4: 2 }, ex: { 1: "Ab Crunch Machine", 4: "Mat Core Series (2 rounds)" } },
+  { id: "obliques", name: "Obliques", sets: { 4: 2 }, ex: { 4: "Single-Arm DB Suitcase Carries, side planks in the Mat Core Series" } },
+  { id: "lowback", name: "Lower back", indirect: true, sets: { 4: 0 }, ex: { 4: "No direct exercise. Held static during Heavy DB Swings." } },
+  { id: "glutes", name: "Glutes", sets: { 1: 3, 2: 3, 4: 3 }, ex: { 1: "Machine Hip Thrust", 2: "Machine Hip Thrust", 4: "DB Reverse Lunges, plus the swings" } },
+  { id: "abductors", name: "Outer hip (abductors)", sets: { 2: 3 }, ex: { 2: "Seated Hip Abductor" } },
+  { id: "adductors", name: "Inner thigh (adductors)", sets: { 2: 3 }, ex: { 2: "Seated Hip Adductor" } },
+  { id: "quads", name: "Quads", sets: { 2: 6, 4: 6 }, ex: { 2: "Leg Press, Leg Extensions", 4: "DB Reverse Lunges, Leg Extensions" } },
+  { id: "hamstrings", name: "Hamstrings", sets: { 1: 3, 2: 6 }, ex: { 1: "Lying Leg Curls", 2: "Lying Leg Curls, Seated Leg Curls" } },
+  { id: "calves", name: "Calves", sets: { 1: 3, 2: 3, 4: 3 }, ex: { 1: "Standing DB Calf Raises", 2: "Seated Calf Raises", 4: "Standing DB Calf Raises" } }
+];
+const BY_ID = Object.fromEntries(MUSCLES.map(m => [m.id, m]));
+const dayColor = n => DAYS[n - 1].color;
+const daysOf = m => Object.keys(m.sets).map(Number).sort();
+const total = m => Object.values(m.sets).reduce((a, b) => a + b, 0);
+
+// shape: [muscle id, mirrored?, svg element without fill]
+const E = (cx, cy, rx, ry, rot) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"${rot ? ` transform="rotate(${rot} ${cx} ${cy})"` : ""}`;
+const P = d => `<path d="${d}"`;
+const R = (x, y, w, h, r) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"`;
+// Each muscle is drawn for one side of the body (x below 100) and mirrored.
+const FRONT = [
+  ["chest_upper", 1, P("M98 63 Q84 62 72 65 Q64 68 62 77 Q80 73 98 79 Z")],
+  ["chest_mid", 1, P("M98 81 Q80 75 62 79 Q60 91 67 99 Q82 107 98 101 Z")],
+  ["delt_front", 1, P("M56 66 Q61 65 61 71 L60 81 Q58 90 53 95 Q50 82 56 66 Z")],
+  ["delt_side", 1, P("M54 67 Q46 72 45 86 L46 98 Q50 99 51 94 Q49 80 54 67 Z")],
+  ["biceps", 1, P("M47 101 Q52 97 55 103 Q56 117 50 130 Q45 134 41 129 Q41 114 47 101 Z")],
+  ["forearms", 1, P("M39 137 Q45 135 46 141 Q43 160 34 183 L28 183 Q30 158 39 137 Z")],
+  ["abs", 0, P("M89 104 H99 V116 H88 Z M101 104 H111 L112 116 H101 Z M88 118 H99 V131 H88 Z M101 118 H112 V131 H101 Z M88 133 H99 V146 H88 Z M101 133 H112 V146 H101 Z M88 148 H99 V170 Q91 164 88 155 Z M101 148 H112 V155 Q109 164 101 170 Z")],
+  ["obliques", 1, P("M86 108 Q76 107 67 102 Q66 126 69 148 Q72 162 79 172 Q84 166 86 158 Z")],
+  ["abductors", 1, P("M67 176 Q61 190 61 210 Q64 215 67 207 Q69 190 72 179 Z")],
+  ["adductors", 1, P("M84 192 Q93 199 99 211 Q97 234 92 256 Q91 226 84 192 Z")],
+  ["quads", 1, P("M73 184 Q64 210 64 244 Q66 270 72 284 Q80 288 86 282 Q90 256 88 226 Q84 200 73 184 Z")],
+  ["calves", 1, P("M68 302 Q62 320 66 347 Q70 353 72 345 Q74 322 68 302 Z M83 302 Q88 322 83 348 Q79 352 78 343 Q78 322 83 302 Z")]
+];
+const BACK = [
+  ["midback", 0, P("M100 46 L93 54 Q82 60 68 63 Q84 70 92 85 L100 122 L108 85 Q116 70 132 63 Q118 60 107 54 Z")],
+  ["delt_rear", 1, P("M66 65 Q57 64 53 72 Q51 84 54 93 Q62 87 67 73 Z")],
+  ["delt_side", 1, P("M54 67 Q46 72 45 86 L46 98 Q50 99 51 94 Q49 80 54 67 Z")],
+  ["lats", 1, P("M91 88 Q76 97 62 95 Q64 124 71 149 Q85 147 98 153 L98 125 Z")],
+  ["triceps", 1, P("M47 101 Q52 97 55 103 Q56 117 50 130 Q45 134 41 129 Q41 114 47 101 Z")],
+  ["forearms", 1, P("M39 137 Q45 135 46 141 Q43 160 34 183 L28 183 Q30 158 39 137 Z")],
+  ["lowback", 0, P("M91 156 Q100 151 109 156 L108 178 Q100 184 92 178 Z")],
+  ["abductors", 1, P("M71 163 Q65 172 64 184 Q74 180 85 181 L89 172 Q80 165 71 163 Z")],
+  ["glutes", 1, P("M98 185 Q84 181 66 187 Q60 201 64 216 Q80 227 98 217 Z")],
+  ["hamstrings", 1, P("M66 225 Q62 252 68 284 Q78 290 86 284 Q92 256 94 229 Q80 234 66 225 Z")],
+  ["calves", 1, P("M67 299 Q58 318 65 345 Q74 354 85 345 Q91 318 85 299 Q76 305 67 299 Z")]
+];
+// Outline of one half of the body, from the neck down the arm, then down the leg and back up the inside.
+const HALF = "M101 44 L93 44 L92 56 Q82 60 70 62 Q56 63 49 72 Q43 82 43 98 Q42 116 37 132 Q30 148 28 166 L25 186 " +
+  "Q20 196 21 206 Q23 216 29 215 Q34 206 33 190 Q40 168 44 150 Q46 140 48 134 Q54 122 56 108 L60 94 " +
+  "Q62 122 66 146 Q64 162 62 178 Q57 200 58 222 Q59 256 66 288 Q59 304 60 322 Q62 348 70 368 L70 386 " +
+  "Q63 396 60 402 Q59 407 66 407 L77 407 Q82 404 80 395 L80 386 Q86 356 88 328 Q88 308 85 294 Q92 262 94 232 L101 208";
+const mirror = s => `<g>${s}</g><g transform="translate(200 0) scale(-1 1)">${s}</g>`;
+const SIL = mirror(`<path class="base" d="${HALF}"/>`) +
+  `<path class="base" d="M100 9 Q114 9 114 26 Q114 36 108 43 Q104 48 100 48 Q96 48 92 43 Q86 36 86 26 Q86 9 100 9 Z"/>`;
+// Thin detail lines drawn over the muscles: collarbones, hip crease and kneecaps; spine and knee creases.
+const LINES_FRONT = mirror(`<path class="dl" d="M94 59 Q82 60 70 63 M72 178 Q84 196 98 207"/><ellipse class="dl" cx="76" cy="293" rx="7" ry="8"/>`);
+const LINES_BACK = `<path class="dl" d="M100 124 V154"/>` + mirror(`<path class="dl" d="M69 292 Q76 296 84 292 M33 136 Q40 140 47 136"/>`);
+
+// banded fill for muscles trained on several days: hard stops with a thin surface gap
+const defs = document.getElementById("defs");
+const made = {};
+function fillFor(ds) {
+  if (ds.length === 1) return dayColor(ds[0]);
+  const id = "g" + ds.join("");
+  if (!made[id]) {
+    const n = ds.length, gap = 0.035; let stops = "";
+    ds.forEach((d, i) => {
+      const a = i / n + (i ? gap / 2 : 0), b = (i + 1) / n - (i < n - 1 ? gap / 2 : 0);
+      stops += `<stop offset="${a}" stop-color="${dayColor(d)}"/><stop offset="${b}" stop-color="${dayColor(d)}"/>`;
+      if (i < n - 1) stops += `<stop offset="${b}" stop-color="${SURFACE}"/><stop offset="${(i + 1) / n + gap / 2}" stop-color="${SURFACE}"/>`;
+    });
+    defs.insertAdjacentHTML("beforeend", `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient>`);
+    made[id] = 1;
+  }
+  return `url(#${id})`;
+}
+function drawBody(shapes, only) {
+  let out = SIL;
+  for (const [id, mirror, el] of shapes) {
+    const m = BY_ID[id], ds = daysOf(m);
+    let fill, op = m.indirect ? 0.45 : 1;
+    if (only) { fill = ds.includes(only) ? dayColor(only) : "var(--idle)"; if (!ds.includes(only)) op = 1; }
+    else fill = fillFor(ds);
+    const label = `${m.name}: ` + (only ? (ds.includes(only) ? "trained" : "not trained") : ds.map(d => DAYS[d - 1].short).join(", "));
+    const attrs = ` class="m" data-m="${id}" fill="${fill}" fill-opacity="${op}"${only ? "" : ' tabindex="0"'}><title>${label}</title>`;
+    const tag = el.slice(1, el.indexOf(" "));
+    const one = `${el}${attrs}</${tag}>`;
+    out += one + (mirror ? `<g transform="translate(200 0) scale(-1 1)">${one.replace(' tabindex="0"', "")}</g>` : "");
+  }
+  return out + (shapes === FRONT ? LINES_FRONT : LINES_BACK);
+}
+
+// legend
+document.getElementById("legend").innerHTML = DAYS.map(d =>
+  `<span><i class="sw" style="background:${d.color}"></i>${d.dow} · ${d.title}</span>`).join("");
+
+// week maps
+document.getElementById("week-front").innerHTML = drawBody(FRONT);
+document.getElementById("week-back").innerHTML = drawBody(BACK);
+
+// day cards
+const exHtml = e => { const [n, tag] = e.split("|"); return `<li>${n}${tag ? ' <span class="new">NEW</span>' : ""}</li>`; };
+document.getElementById("days").innerHTML = DAYS.map(d => `
+  <article class="panel day">
+    <div class="day-head"><i class="sw" style="background:${d.color}"></i><div><small>${d.dow} · Day ${d.n}</small><h3>${d.title}</h3></div></div>
+    <div class="bodies">
+      <figure><svg class="body" viewBox="0 0 200 420" role="img" aria-label="${d.dow}: front of the body">${drawBody(FRONT, d.n)}</svg><figcaption>Front</figcaption></figure>
+      <figure><svg class="body" viewBox="0 0 200 420" role="img" aria-label="${d.dow}: back of the body">${drawBody(BACK, d.n)}</svg><figcaption>Back</figcaption></figure>
+    </div>
+    <ul>${d.ex.map(exHtml).join("")}</ul>
+  </article>`).join("");
+
+// table
+document.getElementById("tbody").innerHTML = MUSCLES.map(m => {
+  const cells = DAYS.map(d => {
+    if (!(d.n in m.sets)) return `<td class="n z">–</td>`;
+    return `<td class="n"><i class="sw" style="background:${d.color}"></i>${m.indirect ? "†" : m.sets[d.n]}</td>`;
+  }).join("");
+  return `<tr data-m="${m.id}"><td>${m.name}${m.indirect ? " †" : ""}</td>${cells}<td class="n tot">${m.indirect ? "†" : total(m)}</td></tr>`;
+}).join("");
+
+// readout + shared highlight
+const readout = document.getElementById("readout");
+function select(id) {
+  const m = BY_ID[id]; if (!m) return;
+  document.querySelectorAll(".on").forEach(n => n.classList.remove("on"));
+  document.querySelectorAll(`[data-m="${id}"]`).forEach(n => n.classList.add("on"));
+  readout.innerHTML = `
+    <div><div class="k">Selected muscle</div><h3>${m.name}</h3></div>
+    <div class="total">${m.indirect ? "No direct sets" : total(m) + " direct sets per week"} · ${daysOf(m).length} day${daysOf(m).length > 1 ? "s" : ""}</div>
+    <ul>${daysOf(m).map(d => `<li><i class="sw" style="background:${dayColor(d)}"></i><div><b>${DAYS[d - 1].dow}${m.indirect ? "" : " · " + m.sets[d] + " sets"}</b><small>${m.ex[d]}</small></div></li>`).join("")}</ul>`;
+}
+document.addEventListener("click", e => { const t = e.target.closest("[data-m]"); if (t) select(t.dataset.m); });
+document.addEventListener("mouseover", e => { const t = e.target.closest("svg [data-m]"); if (t) select(t.dataset.m); });
+document.addEventListener("focusin", e => { const t = e.target.closest("[data-m]"); if (t) select(t.dataset.m); });
+select("triceps");
+</script>
+</body>
+</html>

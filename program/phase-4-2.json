@@ -1,0 +1,114 @@
+{
+  "program": "Phase 4.2: Elevation",
+  "focus": "Sun, Tue, Wed, Fri. Long Sunday, bike finishers, no sets to failure",
+  "recovery_rule": "1–2 RIR",
+  "steps_target": "8–10k",
+  "muscle_map": "muscle-map-4-2.html",
+  "daily_cardio_bookends": {
+    "pre_workout": "8-Minute Easy Warm-Up (Jog on upper days, bike on leg days)",
+    "post_workout": "15-Minute Easy Bike (Zone 2. Sun and Wed: do Bike Intervals instead)"
+  },
+  "day_rotation": [1, 2, 2, 3, 4, 4, 1],
+  "warmup": {
+    "title": "5-Min Athletic Warm-Up",
+    "items": [
+      { "name": "World's Greatest Stretch", "detail": "5 reps/side. Opens hips, thoracic spine, and chest." },
+      { "name": "90/90 Hip Flows", "detail": "30 seconds. Restores hip rotation." },
+      { "name": "Arm Walkouts to Plank", "detail": "5 reps. Wakes up core and shoulder stability." }
+    ]
+  },
+  "recovery": [
+    { "icon": "🧠", "title": "Creatine", "color": "volt", "desc": "5g daily with warm water or tea." },
+    { "icon": "🌙", "title": "Magnesium", "color": "blue", "desc": "200–400mg Bisglycinate, 45 min before bed." },
+    { "icon": "🥩", "title": "Protein Anchor", "color": "amber", "desc": "20–30g fast protein before touching sugar." },
+    { "icon": "🧂", "title": "Salt & Water", "color": "pink", "desc": "Warm water + sea salt pinch when dragging. Then a 15-min nasal-breathing walk." }
+  ],
+  "tips": [
+    "Long day. No set goes to failure: sets 1–2 stop 2 reps short, set 3 stops 1 rep short. After the last pair, run Bike Intervals instead of the easy bike.",
+    "Rest day. Sleep is the training session. When work stress spikes, protect it.",
+    "Lower day: warm up on the bike and keep the easy bike truly easy afterwards. Nose breathing, full sentences.",
+    "After lifting, run Bike Intervals instead of the easy bike. Three-week trial: if leg press stalls or sleep slips, go back to Sunday intervals only.",
+    "Rest day. Recomp runs on protein: 1.6–2.2 g per kg of bodyweight daily, spread over 3–4 meals.",
+    "Progression: when every set hits the top of the rep range at 1–2 RIR, add the smallest weight jump next week.",
+    "Rest day. Stress bloats the scale for days. Judge progress on weekly averages and strength trends, not one weigh-in."
+  ],
+  "days": [
+    {
+      "day_number": 1,
+      "title": "Upper Power",
+      "pill": "Long",
+      "color": "red",
+      "targets": ["Chest", "Back", "Arms", "Delts", "Hams & Glutes"],
+      "intro": "The 90-minute session. Seven blocks, then Bike Intervals instead of the easy bike. Rest tomorrow.",
+      "finisher": "bike-intervals.json",
+      "exercises": [
+        { "name": "Incline DB Press (30°)", "sets": 3, "reps": "6–8", "rest": 120, "notes": "Main anchor lift. Deep stretch. Set 3 at 1 RIR." },
+        { "name": "Chest-Supported Machine Row", "sets": 3, "reps": "10", "rest": 0, "notes": "Zero lower back strain. Set 3 at 1 RIR." },
+        { "name": "Flat Dumbbell Press", "sets": 3, "reps": "10", "rest": 90, "notes": "The back-off press. 1–2 RIR." },
+        { "name": "Parallel Bar Dips", "sets": 3, "reps": "Max", "rest": 0, "notes": "Stop 1 rep short. Shoulders stay back, no deep bottom." },
+        { "name": "Seated DB Hammer Curls", "sets": 3, "reps": "12", "rest": 0, "notes": "Palms facing each other. No swing." },
+        { "name": "Lying DB Tricep Extensions", "sets": 3, "reps": "12", "rest": 75, "notes": "Skullcrusher style. Set 3 at 1 RIR." },
+        { "name": "Incline DB Curls", "sets": 3, "reps": "12", "rest": 0, "notes": "Bench at 45–60°, palms up, arms hanging behind the body. Full stretch at the bottom." },
+        { "name": "Standing DB Lateral Raises", "sets": 3, "reps": "15", "rest": 60, "notes": "Lead with the elbows, stop at shoulder height. Set 3 at 1 RIR." },
+        { "name": "Lying Leg Curls", "sets": 3, "reps": "10", "rest": 0, "notes": "Zero spinal load. Second hamstring session of the week." },
+        { "name": "Seated DB Rear Delt Flyes", "sets": 3, "reps": "15", "rest": 60, "notes": "Chest on thighs. Set 3 at 1 RIR." },
+        { "name": "Wide-Grip Lat Pulldown", "sets": 3, "reps": "10", "rest": 0, "notes": "Pull to the upper chest, elbows down and out. No leaning back." },
+        { "name": "Ab Crunch Machine", "sets": 3, "reps": "15", "rest": 60, "notes": "Spine supported. Slow on the way back. Set 3 at 1 RIR." },
+        { "name": "Machine Hip Thrust", "sets": 3, "reps": "10", "rest": 0, "notes": "Supported glute isolation. 1s squeeze at top." },
+        { "name": "Standing DB Calf Raises", "sets": 3, "reps": "15", "rest": 60, "notes": "Full stretch at the bottom. Set 3 at 1 RIR." }
+      ]
+    },
+    {
+      "day_number": 2,
+      "title": "Machine Lower",
+      "pill": "Drive",
+      "color": "amber",
+      "targets": ["Quads", "Hamstrings", "Glutes", "Calves"],
+      "exercises": [
+        { "name": "Leg Press (Heavy Tempo)", "sets": 3, "reps": "8–10", "rest": 120, "notes": "Feet low and narrow this phase. 3s down, 1s pause. Lower back pinned." },
+        { "name": "Lying Leg Curls", "sets": 3, "reps": "10", "rest": 0, "notes": "Zero spinal load." },
+        { "name": "Leg Extensions", "sets": 3, "reps": "12", "rest": 60, "notes": "Pause at the top. Set 3 at 1 RIR." },
+        { "name": "Machine Hip Thrust", "sets": 3, "reps": "10", "rest": 0, "notes": "Supported glute isolation. 1s squeeze at top." },
+        { "name": "Seated Leg Curls", "sets": 3, "reps": "12", "rest": 60, "notes": "Set 3 at 1 RIR." },
+        { "name": "Seated Hip Abductor", "sets": 3, "reps": "15", "rest": 0, "notes": "Lean forward." },
+        { "name": "Seated Hip Adductor", "sets": 3, "reps": "15", "rest": 0, "notes": "Controlled stretch." },
+        { "name": "Seated Calf Raises", "sets": 3, "reps": "15", "rest": 60, "notes": "Deep stretch, 1s pause. Set 3 at 1 RIR." }
+      ]
+    },
+    {
+      "day_number": 3,
+      "title": "Upper Volume",
+      "pill": "Pump",
+      "color": "volt",
+      "targets": ["Lats", "Chest", "Shoulders", "Arms"],
+      "intro": "Four blocks, then Bike Intervals instead of the easy bike.",
+      "finisher": "bike-intervals.json",
+      "exercises": [
+        { "name": "Neutral (V-Bar) Lat Pulldown", "sets": 3, "reps": "8", "rest": 90, "notes": "Drive elbows down. Shoulder safe. Set 3 at 1 RIR." },
+        { "name": "Chest-Supported DB Row", "sets": 3, "reps": "12", "rest": 0, "notes": "Wide elbows, squeeze the shoulder blades." },
+        { "name": "DB Incline Fly (30°)", "sets": 3, "reps": "12", "rest": 60, "notes": "Wide arc, deep stretch. Set 3 at 1 RIR." },
+        { "name": "Seated DB Lateral Raises", "sets": 3, "reps": "15", "rest": 0, "notes": "Strict form. Lead with the elbows." },
+        { "name": "Seated DB Rear Delt Flyes", "sets": 3, "reps": "15", "rest": 60, "notes": "Chest on thighs. Set 3 at 1 RIR." },
+        { "name": "Machine Preacher Curls", "sets": 3, "reps": "12", "rest": 0, "notes": "Lock arms in pad. Slow negative." },
+        { "name": "Seated Overhead DB Extension", "sets": 3, "reps": "12", "rest": 60, "notes": "One dumbbell, both hands. Elbows point up, lower behind the head for a full stretch. Set 3 at 1 RIR." }
+      ]
+    },
+    {
+      "day_number": 4,
+      "title": "Metabolic Crucible",
+      "pill": "Metabolic",
+      "color": "blue",
+      "targets": ["Quads", "Core", "Conditioning"],
+      "intro": "Swings, lunges and carries. Keep moving between stations, but never let form slip for speed.",
+      "exercises": [
+        { "name": "Heavy DB Swings", "sets": 3, "reps": "12", "rest": 60, "notes": "Snap the hips. End the set when the snap fades, never grind." },
+        { "name": "DB Reverse Lunges", "sets": 3, "reps": "10/leg", "rest": 0, "notes": "Knee-safe unilateral work. Torso tall." },
+        { "name": "Leg Extensions", "sets": 3, "reps": "15", "rest": 0, "notes": "Set 3 at 1 RIR." },
+        { "name": "Standing DB Calf Raises", "sets": 3, "reps": "15", "rest": 60, "notes": "Full stretch at the bottom." },
+        { "name": "Single-Arm DB Suitcase Carries", "sets": 2, "reps": "20 paces/side", "rest": 0, "notes": "Walk tall. Do not lean toward the weight." },
+        { "name": "Mat Core Series", "sets": 2, "reps": "15ea/15/30s", "rest": 90, "notes": "Deadbugs/V-Ups/Side Planks. Continuous control.", "log_weight": false },
+        { "name": "Lean-Away DB Lateral Raise", "sets": 3, "reps": "12", "rest": 45, "notes": "Hold a post, lean away. Set 3 at 1 RIR." }
+      ]
+    }
+  ]
+}

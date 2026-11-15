@@ -1,0 +1,84 @@
+{
+  "program": "Bike Intervals",
+  "schedule": [
+    "Sunday",
+    "Wednesday"
+  ],
+  "focus": "Six short hard efforts to raise VO2max with no impact and no back load",
+  "exercises": [
+    {
+      "name": "Easy Spin Warm-Up",
+      "time_block": "Minutes 0:00 – 3:00",
+      "execution": "Light resistance, smooth cadence. Raise the effort a little each minute until you are breathing steadily.",
+      "benefit": "Warms the legs and brings heart rate up gradually before the hard efforts."
+    },
+    {
+      "name": "Hard Push 1 of 6",
+      "time_block": "Minutes 3:00 – 3:30",
+      "execution": "Raise resistance and push to 8 out of 10 effort. Stay seated. Strong, not an all-out sprint.",
+      "benefit": "Short hard efforts push heart and lungs toward their ceiling."
+    },
+    {
+      "name": "Easy Spin 1 of 6",
+      "time_block": "Minutes 3:30 – 5:00",
+      "execution": "Drop the resistance and spin easy. Slow your breathing and let heart rate fall.",
+      "benefit": "Recovery keeps every hard push high quality."
+    },
+    {
+      "name": "Hard Push 2 of 6",
+      "time_block": "Minutes 5:00 – 5:30",
+      "execution": "Raise resistance and push to 8 out of 10 effort. Stay seated. Match the first push."
+    },
+    {
+      "name": "Easy Spin 2 of 6",
+      "time_block": "Minutes 5:30 – 7:00",
+      "execution": "Drop the resistance and spin easy. Slow your breathing and let heart rate fall."
+    },
+    {
+      "name": "Hard Push 3 of 6",
+      "time_block": "Minutes 7:00 – 7:30",
+      "execution": "Raise resistance and push to 8 out of 10 effort. Stay seated. Keep the cadence smooth."
+    },
+    {
+      "name": "Easy Spin 3 of 6",
+      "time_block": "Minutes 7:30 – 9:00",
+      "execution": "Drop the resistance and spin easy. Slow your breathing and let heart rate fall."
+    },
+    {
+      "name": "Hard Push 4 of 6",
+      "time_block": "Minutes 9:00 – 9:30",
+      "execution": "Raise resistance and push to 8 out of 10 effort. Stay seated. Same output as the first three."
+    },
+    {
+      "name": "Easy Spin 4 of 6",
+      "time_block": "Minutes 9:30 – 11:00",
+      "execution": "Drop the resistance and spin easy. Slow your breathing and let heart rate fall."
+    },
+    {
+      "name": "Hard Push 5 of 6",
+      "time_block": "Minutes 11:00 – 11:30",
+      "execution": "Raise resistance and push to 8 out of 10 effort. Stay seated. If output drops a lot, end here."
+    },
+    {
+      "name": "Easy Spin 5 of 6",
+      "time_block": "Minutes 11:30 – 13:00",
+      "execution": "Drop the resistance and spin easy. Slow your breathing and let heart rate fall."
+    },
+    {
+      "name": "Hard Push 6 of 6",
+      "time_block": "Minutes 13:00 – 13:30",
+      "execution": "Last one. Raise resistance and push to 8 out of 10 effort. Finish strong, still in control."
+    },
+    {
+      "name": "Easy Spin 6 of 6",
+      "time_block": "Minutes 13:30 – 15:00",
+      "execution": "Drop the resistance and spin easy. Slow your breathing and let heart rate fall."
+    },
+    {
+      "name": "Cool-Down Spin",
+      "time_block": "Minutes 15:00 – 18:00",
+      "execution": "Very light resistance. Nose-breathe and keep the legs turning until your breathing is calm.",
+      "benefit": "Brings heart rate down gently so you leave the session calm."
+    }
+  ]
+}
