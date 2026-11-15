@@ -235,6 +235,9 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 }
 .ghost-btn:active { border-color: var(--cyan); color: var(--cyan); }
 .ghost-btn b { color: var(--cyan); font-weight: 700; }
+.prog-list { display: flex; flex-direction: column; gap: 8px; }
+.prog-btn { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; text-align: left; }
+.prog-btn.on { border-color: var(--cyan); color: var(--text); }
 
 /* ── WORKOUT ── */
 #screen-workout { padding-top: 0; }
@@ -550,7 +553,12 @@ body.timer-on::after {
   <div class="section-label" id="split-label">Your Split</div>
   <div class="day-cards" id="day-cards"></div>
 
-  <div class="section-label">Recovery Protocols</div>
+  <div id="program-pick" hidden>
+    <div class="section-label">Program</div>
+    <div class="prog-list" id="prog-list"></div>
+  </div>
+
+  <div class="section-label" id="recovery-label">Recovery Protocols</div>
   <div class="recovery-grid" id="recovery-grid"></div>
 
   <div class="home-foot">
@@ -745,13 +753,18 @@ body.timer-on::after {
 // DATA
 // ══════════════════════════════════════
 const PROGRAM_URL = 'program.json';
+const PROGRAM_DIR = 'program/';
 const CACHE_KEY   = 'athleteos_program_cache';
+const MANIFEST_KEY = 'athleteos_program_list';
+const CHOICE_KEY  = 'athleteos_program_file';   // which program the user picked
 const HISTORY_KEY = 'athleteos_history';     // last logged weights per exercise, survives resets
 const ACTIVE_KEY  = 'athleteos_active_key';  // which tracker key was in use last time
 const TIMER_KEY   = 'athleteos_timer';
 const PREFS_KEY   = 'athleteos_prefs';
 
 let PROGRAM = null;
+let MANIFEST = [];       // [{ file, label }] from program.json
+let PROGRAM_FILE = '';   // the file in program/ that is loaded
 let WORKOUTS = {};
 let TIPS = [];
 let EX = {};          // id -> { ex, day, kind, sets, restSec, timerSec, blockIds, isLastInBlock }
@@ -803,7 +816,7 @@ function indexExercises(program) {
         list.forEach((e, i) => {
           const last = i === list.length - 1;
           EX[e.id] = { ex: e, day: day.day, kind: 'ss', sets: parseSetCount(e.sets) || rounds,
-            restSec: last ? rest : 0, blockRest: rest, timerSec: 0, blockIds: ids, isLastInBlock: last };
+            restSec: last ? rest : 0, blockRest: rest, timerSec: rounds ? 0 : parseMinutes(e.sets), blockIds: ids, isLastInBlock: last };
           order.push(e.id);
         });
       } else {
@@ -835,28 +848,206 @@ function applyProgram(program) {
   } catch (e) {}
 }
 
+// ── Program files ──
+// program.json is the list of programs: [{ "file": "phase-4.json", "label": "…" }, …].
+// Each file lives in program/ and is written in the simple layout (flat exercise list
+// per day, numeric sets/rest). normalizeProgram() turns it into the layout the rest of
+// this page reads. A program.json holding one program directly still works.
+function repsText(r) {
+  r = String(r == null ? '' : r).trim();
+  if (/^[\d\s–-]+$/.test(r)) return r + ' reps';
+  return /^max$/i.test(r) ? 'Max reps' : r;
+}
+
+function simpleExercise(e, solo) {
+  const n = +e.sets || 0;
+  return {
+    name: e.name,
+    sets: n ? n + (solo ? ' sets × ' : ' × ') + repsText(e.reps) : repsText(e.reps),
+    rest: +e.rest ? 'Rest ' + (+e.rest) + 's' : '',
+    weightSets: e.log_weight === false ? 0 : n,
+    note: e.notes || e.note || ''
+  };
+}
+
+// "rest": 0 means "go straight to the next move". A run of those, closed by the first
+// exercise that has a rest, is one superset / tri-set.
+function simpleBlocks(list) {
+  const out = [];
+  let group = [], letter = 0;
+  const flush = () => {
+    if (!group.length) return;
+    if (group.length === 1) out.push(Object.assign({ type: 'main' }, simpleExercise(group[0], true)));
+    else out.push({
+      type: 'superset',
+      label: (group.length === 2 ? 'SUPERSET ' : group.length === 3 ? 'TRI-SET ' : 'GIANT SET ') + String.fromCharCode(65 + letter++),
+      exercises: group.map(e => simpleExercise(e, false))
+    });
+    group = [];
+  };
+  (list || []).forEach(e => { group.push(e); if (+e.rest > 0) flush(); });
+  flush();
+  return out;
+}
+
+// "15-Minute Run (Moderate pace)" -> a cardio card with a 15:00 timer.
+function bookend(text, header) {
+  if (!text) return null;
+  const m = /^(.*?)\s*\((.*)\)\s*$/.exec(text);
+  const name = m ? m[1] : text;
+  const mins = /(\d+)\s*-?\s*min/i.exec(name);
+  return { type: 'cardio', header, name, sets: mins ? mins[1] + ' Minutes' : '', note: m ? m[2] : '' };
+}
+
+// A timed routine with no days (the cardio flush): one day, one timer per time block.
+function flowDay(data, name) {
+  const blocks = [];
+  (data.exercises || []).forEach(e => {
+    const tb = String(e.time_block || '');
+    const m = /(\d+):(\d+)\s*[–-]\s*(\d+):(\d+)/.exec(tb);
+    const mins = m ? Math.round(((+m[3] * 60 + +m[4]) - (+m[1] * 60 + +m[2])) / 60) : 0;
+    const item = {
+      name: e.name,
+      sets: mins ? mins + ' min · ' + m[1] + ':' + m[2] + ' – ' + m[3] + ':' + m[4] : tb,
+      note: [e.execution, e.benefit].filter(Boolean).join('<br><br>')
+    };
+    const prev = blocks[blocks.length - 1];
+    if (tb && prev && prev.tb === tb) { item.sets = 'Same block · alternate'; prev.items.push(item); }
+    else blocks.push({ tb, items: [item] });
+  });
+  return {
+    day: 1, name, pill: 'Flow', color: 'blue', targets: data.focus || '',
+    exercises: blocks.map(b => b.items.length === 1
+      ? Object.assign({ type: 'bw' }, b.items[0])
+      : { type: 'superset', label: b.tb.replace(/^minutes\s*/i, ''), exercises: b.items })
+  };
+}
+
+function normalizeProgram(data, file) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
+  if (data.program && typeof data.program === 'object') return data;   // already in the page's layout
+
+  const title = String(data.program || '');
+  const cut = title.indexOf(':');
+  const phase = cut > 0 ? title.slice(0, cut).trim() : title;
+  const name = cut > 0 ? title.slice(cut + 1).trim() : title;
+  const book = data.daily_cardio_bookends || {};
+
+  let days = (Array.isArray(data.days) ? data.days : []).map((d, i) => ({
+    day: d.day_number != null ? d.day_number : d.day != null ? d.day : i + 1,
+    name: d.title || d.name || 'Day ' + (i + 1),
+    pill: d.pill || '',
+    color: d.color || 'blue',
+    targets: Array.isArray(d.targets) ? d.targets.join(' · ') : (d.targets || ''),
+    intro: d.intro || '',
+    exercises: [bookend(book.pre_workout, '🏃 Pre-Workout')]
+      .concat(simpleBlocks(d.exercises), [bookend(book.post_workout, '🚶 Post-Workout')])
+      .filter(Boolean)
+  }));
+  const flow = !days.length && Array.isArray(data.exercises) && data.exercises.length;
+  if (flow) days = [flowDay(data, name)];
+
+  return {
+    program: {
+      version: String(file || title).replace(/\.json$/i, ''),
+      phase, name,
+      subtitle: flow ? (data.schedule || []).join(' · ') : [cut > 0 ? name : '', data.focus].filter(Boolean).join(' — '),
+      recovery_rule: data.recovery_rule || '',
+      steps_target: data.steps_target || ''
+    },
+    day_rotation: data.day_rotation || [],
+    warmup: data.warmup || {},
+    recovery: data.recovery || [],
+    tips: (data.tips && data.tips.length) ? data.tips : (data.focus ? [data.focus] : []),
+    days
+  };
+}
+
+function usable(p) { return !!(p && Array.isArray(p.days) && p.days.length); }
+function readCache(key) { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } }
+function writeCache(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
+function programList(v) {
+  return Array.isArray(v) ? v.filter(p => p && typeof p.file === 'string' && /^[\w.\- ]+\.json$/i.test(p.file)) : [];
+}
+async function fetchJSON(url) {
+  // Cache-buster: GitHub Pages' CDN and the home-screen cache both lie.
+  const res = await fetch(url + '?v=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
 async function fetchProgram() {
-  let data = null;
-  try {
-    // Cache-buster: GitHub Pages' CDN and the home-screen cache both lie.
-    const res = await fetch(PROGRAM_URL + '?v=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    data = await res.json();
-    if (!data || !Array.isArray(data.days) || !data.days.length) throw new Error('no days[]');
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) {}
-    return data;
-  } catch (e) {
-    console.warn('program.json fetch failed:', e.message, '— falling back to cache');
-    try {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) return JSON.parse(cached);
-    } catch (e2) {}
-    return null;
+  let top = null;
+  try { top = await fetchJSON(PROGRAM_URL); }
+  catch (e) { console.warn('program.json fetch failed:', e.message, '— falling back to cache'); }
+
+  // program.json holding a single program directly.
+  if (top && !Array.isArray(top)) {
+    const single = normalizeProgram(top, '');
+    if (usable(single)) { writeCache(CACHE_KEY, top); return single; }
   }
+
+  let list = programList(top);
+  if (list.length) writeCache(MANIFEST_KEY, list);
+  else list = programList(readCache(MANIFEST_KEY));
+  if (!list.length) {
+    const old = normalizeProgram(readCache(CACHE_KEY), '');   // copy saved by an older version of this page
+    return usable(old) ? old : null;
+  }
+
+  MANIFEST = list;
+  let want = '';
+  try { want = localStorage.getItem(CHOICE_KEY) || ''; } catch (e) {}
+  const entry = list.find(p => p.file === want) || list[0];
+  PROGRAM_FILE = entry.file;
+
+  const key = CACHE_KEY + ':' + entry.file;
+  let raw = null;
+  try {
+    raw = await fetchJSON(PROGRAM_DIR + encodeURIComponent(entry.file));
+    if (!usable(normalizeProgram(raw, entry.file))) throw new Error('no days or exercises');
+    writeCache(key, raw);
+  } catch (e) {
+    console.warn(entry.file + ' fetch failed:', e.message, '— falling back to cache');
+    raw = readCache(key);
+  }
+  const program = normalizeProgram(raw, entry.file);
+  return usable(program) ? program : null;
+}
+
+// Save the other programs too, so switching works with no signal.
+function cacheOtherPrograms() {
+  MANIFEST.forEach(p => {
+    if (p.file === PROGRAM_FILE) return;
+    fetchJSON(PROGRAM_DIR + encodeURIComponent(p.file))
+      .then(raw => { if (usable(normalizeProgram(raw, p.file))) writeCache(CACHE_KEY + ':' + p.file, raw); })
+      .catch(() => {});
+  });
+}
+
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+function renderProgramPicker() {
+  $('program-pick').hidden = MANIFEST.length < 2;
+  $('prog-list').innerHTML = MANIFEST.map((p, i) => {
+    const on = p.file === PROGRAM_FILE;
+    return `<button class="ghost-btn prog-btn ${on ? 'on' : ''}" onclick="chooseProgram(${i})" aria-pressed="${on}">` +
+      `<span>${esc(p.label || p.file)}</span>${on ? '<b>ACTIVE</b>' : ''}</button>`;
+  }).join('');
+}
+
+// Each program keeps its own week tracker, so switching back and forth loses nothing.
+function chooseProgram(i) {
+  const p = MANIFEST[i];
+  if (!p || p.file === PROGRAM_FILE) return;
+  try { localStorage.setItem(CHOICE_KEY, p.file); } catch (e) {}
+  history.replaceState({ s: 'home' }, '');
+  location.reload();
 }
 
 function showLoadError() {
-  $('home-sub').textContent = 'Could not load program.json — and no cached copy on this device.';
+  renderProgramPicker();
+  $('home-sub').textContent = 'Could not load ' + (PROGRAM_FILE ? PROGRAM_DIR + PROGRAM_FILE : 'program.json') + ' — and no cached copy on this device.';
   $('day-cards').innerHTML =
     '<div class="rec-card cut" style="--edge:var(--red)">' +
     '<div class="rec-title text-red">Program not loaded</div>' +
@@ -963,7 +1154,9 @@ function renderHome() {
   document.title = (meta.title_top || 'Athlete') + ' ' + (meta.title_bottom || 'OS') + (meta.phase ? ' — ' + meta.phase : '');
 
   const days = PROGRAM.days;
-  $('split-label').textContent = 'Your ' + days.length + '-Day Split';
+  $('split-label').textContent = days.length > 1 ? 'Your ' + days.length + '-Day Split' : 'Your Session';
+  $('recovery-label').hidden = !(PROGRAM.recovery || []).length;
+  renderProgramPicker();
 
   $('day-cards').innerHTML = days.map(d => `
     <button class="day-card cut" id="home-day-${d.day}" onclick="openWorkout(${d.day})">
@@ -1035,13 +1228,13 @@ function renderWorkout(dayNum) {
   </div>
   <div class="wk-meta">${day.targets || ''}</div>
   ${day.intro ? `<div class="wk-intro cut">${day.intro}</div>` : ''}
-  <div class="warmup-strip cut ${warmupOpen ? 'open' : ''}" id="warmup-strip">
+  ${(wu.items || []).length ? `<div class="warmup-strip cut ${warmupOpen ? 'open' : ''}" id="warmup-strip">
     <button class="warmup-toggle" onclick="toggleWarmup()">
       <span>${wu.title || 'Warm-Up'}</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
     <div class="warmup-body">${warmupItemsHTML()}</div>
-  </div>
+  </div>` : ''}
   <div class="exercises-list" id="ex-list"></div>`;
   renderExercises(dayNum);
 }
@@ -1491,6 +1684,7 @@ window.onload = async function() {
   applyProgram(program);
   loadState();
   renderHome();
+  cacheOtherPrograms();
 
   // Coach tip rotates by weekday
   if (TIPS.length) $('coach-tip-text').textContent = TIPS[new Date().getDay() % TIPS.length];

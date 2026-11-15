@@ -1,5 +1,5 @@
 [
   { "file": "phase-4.json", "label": "Phase 4.0 · 4-day split" },
   { "file": "phase-3.json", "label": "Phase 3.0 · 4-day split" },
-  { "file": "cardio-flush.json", "label": "15-min Cardio-Respiratory Flush" }
+  { "file": "Cardio-Respiratory-Flush.json", "label": "15-min Cardio-Respiratory Flush" }
 ]
