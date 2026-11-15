@@ -1,11 +1,11 @@
 {
   "program": "Phase 4.0: Elevation",
-  "focus": "New angles and Tri-Sets for hypertrophy",
-  "recovery_rule": "1\u20132 RIR",
-  "steps_target": "8\u201310k",
+  "focus": "Phase 3 base with fresh angles, tri-sets, and full volume",
+  "recovery_rule": "1–2 RIR",
+  "steps_target": "8–10k",
   "daily_cardio_bookends": {
-    "pre_workout": "15-Minute Run (Moderate pace, spike dopamine)",
-    "post_workout": "15-Minute Walk (De-escalation, flush cortisol)"
+    "pre_workout": "8-Minute Easy Warm-Up (Jog on upper days, bike on leg days)",
+    "post_workout": "20-Minute Incline Walk (Zone 2, nose breathing, full sentences)"
   },
   "day_rotation": [
     1,
@@ -35,34 +35,38 @@
   },
   "recovery": [
     {
-      "icon": "\ud83e\udde0",
+      "icon": "🧠",
       "title": "Creatine",
       "color": "volt",
       "desc": "5g daily with warm water or tea."
     },
     {
-      "icon": "\ud83c\udf19",
+      "icon": "🌙",
       "title": "Magnesium",
       "color": "blue",
-      "desc": "200\u2013400mg Bisglycinate, 45 min before bed."
+      "desc": "200–400mg Bisglycinate, 45 min before bed."
     },
     {
-      "icon": "\ud83e\udd69",
+      "icon": "🥩",
       "title": "Protein Anchor",
       "color": "amber",
-      "desc": "20\u201330g fast protein before touching sugar."
+      "desc": "20–30g fast protein before touching sugar."
     },
     {
-      "icon": "\ud83e\uddc2",
-      "title": "Adrenal Salt",
+      "icon": "🧂",
+      "title": "Salt & Water",
       "color": "pink",
-      "desc": "Warm water + sea salt pinch when dragging."
+      "desc": "Warm water + sea salt pinch when dragging. Then a 15-min nasal-breathing walk."
     }
   ],
   "tips": [
-    "Sets 1 and 2 stay at 1\u20132 RIR. Only the last set on machines goes to failure.",
-    "Tri-Sets: Move from exercise 1 to 2 to 3 with minimal rest, then rest 60-90s before repeating.",
-    "Sleep is the training session. When work stress spikes, protect it."
+    "Sleep is the training session. When work stress spikes, protect it.",
+    "No set goes to failure. Sets 1–2 stop 2 reps short, set 3 stops 1 rep short. If you could do 3+ more, the weight is too light.",
+    "Lower day: warm up on the bike, not the treadmill. Start easy, finish moderate. Save your legs for the leg press.",
+    "Zone 2 check on the incline walk: nose breathing, full sentences. If you are gasping, lower the incline. If it feels like a stroll, raise it.",
+    "Progression: when every set hits the top of the rep range at 1–2 RIR, add the smallest weight jump next week.",
+    "Recomp runs on protein: 1.6–2.2 g per kg of bodyweight daily, spread over 3–4 meals.",
+    "Interval day: run the Bike Intervals routine today. If the work week was brutal, skip it. Recovery beats one more session."
   ],
   "days": [
     {
@@ -78,46 +82,46 @@
       ],
       "exercises": [
         {
-          "name": "Incline Dumbbell Press (30\u00b0)",
+          "name": "Incline DB Press (30°)",
           "sets": 3,
-          "reps": "6\u20138",
+          "reps": "6–8",
           "rest": 120,
-          "notes": "Main anchor lift. Deep stretch, set 3 to failure."
+          "notes": "Main anchor lift. Deep stretch. Set 3 at 1 RIR."
         },
         {
           "name": "Chest-Supported Machine Row",
           "sets": 3,
           "reps": "10",
           "rest": 0,
-          "notes": "Zero lower back strain."
+          "notes": "Zero lower back strain. Set 3 at 1 RIR."
         },
         {
-          "name": "Flat Dumbbell Flyes",
+          "name": "Flat Dumbbell Press",
           "sets": 3,
-          "reps": "12",
-          "rest": 60,
-          "notes": "Replaces Cable Crossover."
+          "reps": "10",
+          "rest": 90,
+          "notes": "Now the back-off press. 1–2 RIR."
+        },
+        {
+          "name": "Parallel Bar Dips",
+          "sets": 3,
+          "reps": "Max",
+          "rest": 0,
+          "notes": "Stop 1 rep short. Shoulders stay back, no deep bottom."
         },
         {
           "name": "Seated DB Hammer Curls",
           "sets": 3,
           "reps": "12",
           "rest": 0,
-          "notes": "Palms facing each other."
+          "notes": "Palms facing each other. No swing."
         },
         {
           "name": "Lying DB Tricep Extensions",
           "sets": 3,
-          "reps": "15",
-          "rest": 0,
-          "notes": "Skullcrushers style."
-        },
-        {
-          "name": "Seated DB Wrist Curls",
-          "sets": 3,
-          "reps": "15",
-          "rest": 60,
-          "notes": "Forearm mass. Final set to failure."
+          "reps": "12",
+          "rest": 75,
+          "notes": "Skullcrusher style. Set 3 at 1 RIR."
         }
       ]
     },
@@ -134,46 +138,39 @@
       ],
       "exercises": [
         {
-          "name": "Leg Press (Quad Sweep Focus)",
+          "name": "Leg Press (Heavy Tempo)",
           "sets": 3,
-          "reps": "8\u201310",
+          "reps": "8–10",
           "rest": 120,
-          "notes": "Feet low/narrow. 3s down, 1s pause."
+          "notes": "Feet low and narrow this phase. 3s down, 1s pause. Lower back pinned."
         },
         {
-          "name": "Seated Leg Curls",
+          "name": "Lying Leg Curls",
           "sets": 3,
           "reps": "10",
           "rest": 0,
-          "notes": "Hamstring isolation."
+          "notes": "Zero spinal load."
         },
         {
           "name": "Leg Extensions",
           "sets": 3,
           "reps": "12",
           "rest": 60,
-          "notes": "Take set 3 to failure."
+          "notes": "Pause at the top. Set 3 at 1 RIR."
         },
         {
-          "name": "Machine Glute Kickback",
+          "name": "Machine Hip Thrust",
           "sets": 3,
           "reps": "10",
           "rest": 0,
-          "notes": "Supported kickback."
+          "notes": "Supported glute isolation. 1s squeeze at top."
         },
         {
-          "name": "Seated Calf Raises",
+          "name": "Seated Leg Curls",
           "sets": 3,
-          "reps": "15",
-          "rest": 0,
-          "notes": "Deep stretch."
-        },
-        {
-          "name": "Ab Crunch Machine",
-          "sets": 3,
-          "reps": "15",
+          "reps": "12",
           "rest": 60,
-          "notes": "Spine supported. Final set to failure."
+          "notes": "Set 3 at 1 RIR."
         },
         {
           "name": "Seated Hip Abductor",
@@ -186,8 +183,15 @@
           "name": "Seated Hip Adductor",
           "sets": 3,
           "reps": "15",
+          "rest": 0,
+          "notes": "Controlled stretch."
+        },
+        {
+          "name": "Seated Calf Raises",
+          "sets": 3,
+          "reps": "15",
           "rest": 60,
-          "notes": "Set 3 to failure."
+          "notes": "Deep stretch, 1s pause. Set 3 at 1 RIR."
         }
       ]
     },
@@ -198,6 +202,7 @@
       "color": "volt",
       "targets": [
         "Lats",
+        "Chest",
         "Shoulders",
         "Arms"
       ],
@@ -207,42 +212,49 @@
           "sets": 3,
           "reps": "8",
           "rest": 90,
-          "notes": "Lower lat focus, shoulder safe. Set 3 to failure."
+          "notes": "Drive elbows down. Shoulder safe. Set 3 at 1 RIR."
         },
         {
           "name": "Chest-Supported DB Row",
           "sets": 3,
           "reps": "12",
           "rest": 0,
-          "notes": "Wide elbows."
+          "notes": "Wide elbows, squeeze the shoulder blades."
+        },
+        {
+          "name": "DB Incline Fly (30°)",
+          "sets": 3,
+          "reps": "12",
+          "rest": 60,
+          "notes": "Wide arc, deep stretch. Set 3 at 1 RIR."
         },
         {
           "name": "Seated DB Lateral Raises",
           "sets": 3,
           "reps": "15",
           "rest": 0,
-          "notes": "Strict form."
+          "notes": "Strict form. Lead with the elbows."
         },
         {
           "name": "Seated DB Rear Delt Flyes",
           "sets": 3,
           "reps": "15",
           "rest": 60,
-          "notes": "Cap the shoulder joint. Final set to failure."
+          "notes": "Chest on thighs. Set 3 at 1 RIR."
         },
         {
           "name": "Machine Preacher Curls",
           "sets": 3,
           "reps": "12",
           "rest": 0,
-          "notes": "Lock arms in pad."
+          "notes": "Lock arms in pad. Slow negative."
         },
         {
           "name": "Tricep Press Machine",
           "sets": 3,
           "reps": "12",
           "rest": 60,
-          "notes": "Push straight down, set 3 to failure."
+          "notes": "Push straight down. Set 3 at 1 RIR."
         }
       ]
     },
@@ -252,46 +264,46 @@
       "pill": "Metabolic",
       "color": "blue",
       "targets": [
-        "Athleticism",
+        "Quads",
         "Core",
         "Conditioning"
       ],
-      "intro": "Heavy carries and lunges. Keep moving to spike your heart rate safely.",
+      "intro": "Swings, lunges and carries. Keep moving between stations, but never let form slip for speed.",
       "exercises": [
         {
           "name": "Heavy DB Swings",
-          "sets": 4,
+          "sets": 3,
           "reps": "12",
           "rest": 60,
-          "notes": "Increased to 4 sets for higher metabolic output."
+          "notes": "Snap the hips. End the set when the snap fades, never grind."
         },
         {
           "name": "DB Reverse Lunges",
           "sets": 3,
-          "reps": "10",
+          "reps": "10/leg",
           "rest": 0,
-          "notes": "Knee-safe unilateral work."
+          "notes": "Knee-safe unilateral work. Torso tall."
         },
         {
           "name": "Leg Extensions",
           "sets": 3,
           "reps": "15",
           "rest": 0,
-          "notes": "Set 3 to failure."
+          "notes": "Set 3 at 1 RIR."
         },
         {
           "name": "Standing DB Calf Raises",
           "sets": 3,
           "reps": "15",
           "rest": 60,
-          "notes": "Massive lower leg pump."
+          "notes": "Full stretch at the bottom."
         },
         {
           "name": "Single-Arm DB Suitcase Carries",
           "sets": 3,
-          "reps": "20 paces",
+          "reps": "20 paces/side",
           "rest": 0,
-          "notes": "Brutal oblique work."
+          "notes": "Walk tall. Do not lean toward the weight."
         },
         {
           "name": "Mat Core Series",
@@ -302,11 +314,11 @@
           "log_weight": false
         },
         {
-          "name": "Seated DB Upright Rows",
+          "name": "Lean-Away DB Lateral Raise",
           "sets": 3,
-          "reps": "15",
+          "reps": "12",
           "rest": 45,
-          "notes": "Pull elbows high. Set 3 to failure."
+          "notes": "Hold a post, lean away. Set 3 at 1 RIR."
         }
       ]
     }
