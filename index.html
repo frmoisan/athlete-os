@@ -730,7 +730,7 @@ body.timer-on::after {
     <div class="page-header">
       <div class="kicker" style="color:var(--magenta)">Muscle map</div>
       <div class="page-title">No map for<br>this program</div>
-      <div class="page-sub">Add "muscle_map": "your-page.html" to the program file to show it here.</div>
+      <div class="page-sub">This program has no muscle map yet. Pick another program on the Home screen to see one.</div>
     </div>
   </div>
 </div>
@@ -1235,8 +1235,8 @@ function renderHome() {
   const days = PROGRAM.days;
   $('split-label').textContent = days.length > 1 ? 'Your ' + days.length + '-Day Split' : 'Your Session';
   $('recovery-label').hidden = !(PROGRAM.recovery || []).length;
-  // "muscle_map": "muscle-map-4-2.html" in a program file is the page shown in the Muscles tab.
-  MAP_URL = /^[\w.\-]+\.html$/i.test(meta.muscle_map || '') ? meta.muscle_map : '';
+  // "muscle_map": "muscle-map.html#4-2" in a program file is the page (and map) shown in the Muscles tab.
+  MAP_URL = /^[\w.\-]+\.html(#[\w.\-]+)?$/i.test(meta.muscle_map || '') ? meta.muscle_map : '';
   if (MAP_URL) fetch(MAP_URL).catch(() => {});   // the fetch saves it for offline
   renderProgramPicker();
 
