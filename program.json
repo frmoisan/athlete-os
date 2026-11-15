@@ -1,7 +1,5 @@
 [
   { "file": "phase-4-2.json", "label": "Phase 4.2 · 4-day split" },
-  { "file": "phase-4.json", "label": "Phase 4.0 · 4-day split" },
-  { "file": "phase-3.json", "label": "Phase 3.0 · 4-day split" },
   { "file": "bike-intervals.json", "label": "Bike Intervals · 18 min" },
   { "file": "Cardio-Respiratory-Flush.json", "label": "15-min Cardio-Respiratory Flush" }
 ]
