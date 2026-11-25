@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Athlete OS">
-<meta name="theme-color" content="#15122a">
+<meta name="theme-color" content="#000000">
 <title>Athlete OS</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -21,7 +21,7 @@
 @font-face { font-family: 'JetBrains Mono'; font-weight: 100 800; font-style: normal; font-display: swap; src: url(fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations'), url(fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2'); }
 
 :root {
-  --bg: #15122a;        /* page background */
+  --bg: #000000;        /* page background */
   --surface: #000000;   /* cards */
   --surface2: #221d40;  /* buttons and tiles inside cards */
   --border: #2b2550;
@@ -70,11 +70,12 @@ button { font-family: inherit; color: inherit; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 
 /* ── PANEL ──
-   A filled, rounded block with no outline. --fill is its background. */
+   A black, rounded block with a thin outline. --fill is its background. */
 .cut {
   --fill: var(--surface);
   position: relative;
   background: var(--fill);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
 }
 
@@ -107,6 +108,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
   height: calc(var(--nav-h) + var(--safe-bottom));
   padding: 0 max(4px, calc((100vw - 520px) / 2)) var(--safe-bottom);
   background: #000000;
+  border-top: 1px solid var(--border);
   display: flex; z-index: 100;
 }
 .nav-btn {
@@ -150,8 +152,8 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 /* Today call-to-action */
 .cta-glow { margin-top: 4px; }
 .cta {
-  --fill: #10283a;
-  width: 100%; border: none; cursor: pointer; text-align: left;
+  --fill: #0a1a24;
+  width: 100%; border: 1px solid rgba(0,240,255,0.4); cursor: pointer; text-align: left;
   display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px;
   padding: 16px 18px; min-height: 76px;
 }
@@ -183,13 +185,14 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 /* Day cards */
 .day-cards { display: flex; flex-direction: column; gap: 10px; }
 .day-card {
-  width: 100%; border: none; text-align: left; cursor: pointer;
+  width: 100%; border: 1px solid var(--border); text-align: left; cursor: pointer;
   padding: 14px 14px 22px; min-height: 72px;
   display: flex; align-items: center; gap: 12px;
   transition: transform .12s;
 }
 .day-card:active { transform: scale(.985); }
 .day-num { font-family: var(--mono); font-size: 30px; font-weight: 700; color: var(--faint); line-height: 1; width: 40px; flex-shrink: 0; }
+.day-card.active-day { border-color: rgba(0,240,255,0.45); }
 .day-card.active-day .day-num { color: var(--cyan); }
 .day-info { flex: 1; min-width: 0; }
 .day-name { font-size: 19px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; line-height: 1.15; }
@@ -211,7 +214,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .home-foot { display: flex; gap: 10px; padding-top: 24px; }
 .ghost-btn {
   flex: 1; min-height: 48px; cursor: pointer;
-  background: var(--surface); border: 1px solid transparent; border-radius: var(--radius); color: var(--muted);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--muted);
   font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
   padding: 8px 10px;
 }
@@ -219,7 +222,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .ghost-btn b { color: var(--cyan); font-weight: 700; }
 .prog-list { display: flex; flex-direction: column; gap: 8px; }
 .prog-btn { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; text-align: left; }
-.prog-btn.on { background: var(--surface2); color: var(--text); }
+.prog-btn.on { border-color: rgba(0,240,255,0.45); color: var(--text); }
 
 /* ── WORKOUT ── */
 #screen-workout { padding-top: 0; }
@@ -231,7 +234,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 }
 .back-btn {
   width: 48px; height: 48px; flex-shrink: 0; cursor: pointer;
-  background: var(--surface); border: 1px solid transparent; border-radius: var(--radius); color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text);
   display: flex; align-items: center; justify-content: center;
 }
 .back-btn:active { border-color: var(--cyan); color: var(--cyan); }
@@ -302,6 +305,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .ex-sets { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
 .ex-progress { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--cyan); flex-shrink: 0; }
 .ex-chev { color: var(--faint); flex-shrink: 0; transition: transform .2s; }
+.ex-card.cut.expanded, .ss-card.expanded { border-color: #4a4190; }   /* the open card */
 .ex-card.expanded .ex-chev { transform: rotate(180deg); color: var(--cyan); }
 
 .ex-detail { display: none; padding: 2px 14px 16px 16px; border-top: 1px solid rgba(255,255,255,0.07); }
@@ -323,7 +327,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .sets { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 8px; }
 .set-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .weight-input {
-  width: 100%; height: 48px; background: var(--bg); border: 1px solid transparent; border-radius: var(--radius);
+  width: 100%; height: 48px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
   color: var(--text); font-family: var(--mono); font-size: 18px; font-weight: 700; text-align: center;
   padding: 0 4px; -webkit-appearance: none; appearance: none; -moz-appearance: textfield;
 }
@@ -331,7 +335,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .weight-input:focus { outline: none; border-color: var(--cyan); box-shadow: inset 0 0 0 1px var(--cyan); }
 .weight-input::placeholder { color: var(--faint); font-weight: 400; }
 .set-btn {
-  height: 48px; cursor: pointer; background: var(--surface2); border: 1px solid transparent; border-radius: var(--radius); color: var(--muted);
+  height: 48px; cursor: pointer; background: transparent; border: 1px solid var(--border); border-radius: var(--radius); color: var(--muted);
   font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 1px;
   display: flex; align-items: center; justify-content: center; gap: 6px;
   transition: background .12s, color .12s, border-color .12s;
@@ -388,7 +392,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .special-block.cardio .special-header { color: var(--magenta); }
 
 /* Done banner */
-.done-banner { --fill: #10283a; margin-top: 6px; padding: 18px 16px; text-align: center; display: none; scroll-margin: 96px 0 200px; }
+.done-banner { --fill: #0a1a24; border-color: rgba(0,240,255,0.4); margin-top: 6px; padding: 18px 16px; text-align: center; display: none; scroll-margin: 96px 0 200px; }
 .done-banner.show { display: block; }
 .done-banner-title { font-size: 26px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cyan); }
 .done-banner-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
@@ -414,13 +418,13 @@ body.timer-on::after {
 .dock-time { font-family: var(--mono); font-size: 36px; font-weight: 700; line-height: 1.05; letter-spacing: 1px; color: var(--text); font-variant-numeric: tabular-nums; }
 .dock-btn {
   width: 50px; height: 50px; flex-shrink: 0; cursor: pointer;
-  background: var(--bg); border: 1px solid transparent; border-radius: var(--radius); color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text);
   font-family: var(--mono); font-size: 13px; font-weight: 700;
 }
 .dock-btn:active { border-color: var(--cyan); color: var(--cyan); }
 .dock-btn.skip { color: var(--magenta); font-size: 11px; letter-spacing: .5px; }
 /* Slanted bar that fills up to 100% while the time above counts down. */
-.dock-bar { position: relative; height: 24px; margin: 10px 12px 0 2px; background: var(--bg); transform: skewX(-24deg); overflow: hidden; }
+.dock-bar { position: relative; height: 24px; margin: 10px 12px 0 2px; background: #1a1634; transform: skewX(-24deg); overflow: hidden; }
 .dock-bar i { position: absolute; inset: 0; background: var(--yellow); transform-origin: left; transform: scaleX(0); }
 /* "difference" makes the number yellow on the empty track and black on the filled part. */
 .dock-bar b { position: absolute; left: 12px; top: 50%; transform: translateY(-50%) skewX(24deg); font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--yellow); mix-blend-mode: difference; }
@@ -435,10 +439,10 @@ body.timer-on::after {
 .page-sub { font-size: 14px; color: var(--muted); line-height: 1.5; }
 .check-options { display: flex; flex-direction: column; gap: 8px; }
 .check-opt {
-  width: 100%; border: none; text-align: left; cursor: pointer; color: var(--text);
+  width: 100%; border: 1px solid var(--border); text-align: left; cursor: pointer; color: var(--text);
   padding: 13px 16px; min-height: 60px; display: flex; align-items: center; gap: 12px;
 }
-.check-opt.selected { --fill: #11303d; }
+.check-opt.selected { --fill: #0a1a24; border-color: rgba(0,240,255,0.55); }
 .check-opt-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .check-opt-text { flex: 1; min-width: 0; }
 .check-opt-title { font-size: 16px; font-weight: 600; }

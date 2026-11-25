@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Muscle Map</title>
-<meta name="theme-color" content="#15122a">
+<meta name="theme-color" content="#000000">
 <style>
 /* Same local font files as the app, so this page works offline. */
 @font-face { font-family: 'Chakra Petch'; font-weight: 400; font-style: normal; font-display: swap; src: url(fonts/chakra-petch-latin-400-normal.woff2) format('woff2'); }
@@ -15,9 +15,9 @@
   /* Layout: combined body map + readout first, then one small map per day, then the sets table.
      Single theme (Athlete OS neon noir). Day colours are the app's day accents. */
   color-scheme: dark;
-  --bg: #15122a;
+  --bg: #000000;
   --panel: #000000;
-  --line: #241f42;
+  --line: #2b2550;
   --body: #201c3a;
   --outline: #5d578c;
   --idle: #2c2750;
@@ -37,7 +37,7 @@ html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--display); font-size: 16px; line-height: 1.5; }
 .wrap { max-width: 980px; margin: 0 auto; padding: 28px 16px 56px; display: flex; flex-direction: column; gap: 36px; }
 header { display: flex; flex-direction: column; gap: 12px; }
-.back { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 8px; background: var(--panel);
+.back { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
   color: var(--ink); text-decoration: none; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .back:active { color: var(--d4); }
 .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
@@ -54,7 +54,7 @@ section { display: flex; flex-direction: column; gap: 16px; }
 .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; display: inline-block; }
 .new { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; color: var(--accent); border-radius: 4px; background: rgba(255,43,214,0.13); padding: 0 4px; margin-left: 4px; white-space: nowrap; }
 
-.panel { background: var(--panel); border-radius: 8px; padding: 16px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
 .combo { display: grid; grid-template-columns: 1fr; gap: 18px; }
 @media (min-width: 760px) { .combo { grid-template-columns: 1.25fr 1fr; align-items: start; } }
 .bodies { display: flex; gap: 8px; justify-content: center; }
