@@ -3,7 +3,7 @@
 // soon as you are online; cached copy when the network is down or too slow.
 // fonts/ and icons/: cached copy first (they never change).
 // Bump VERSION only if you change this file's logic or replace a font/icon.
-const VERSION = 'athlete-os-v1';
+const VERSION = 'athlete-os-v2';
 const SHELL = [
   './', 'index.html', 'program.json', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png',
@@ -14,10 +14,29 @@ const SHELL = [
 ];
 const NETWORK_TIMEOUT_MS = 3500;
 
+// Every program listed in program.json, plus the muscle map page each one names, so the
+// first open with no signal already has them. A failure here never blocks the install.
+async function cachePrograms(cache) {
+  try {
+    const list = await (await fetch('program.json', { cache: 'no-store' })).json();
+    if (!Array.isArray(list)) return;
+    await Promise.all(list.map(async p => {
+      if (!p || typeof p.file !== 'string' || !/^[\w.\- ]+\.json$/i.test(p.file)) return;
+      const url = 'program/' + encodeURIComponent(p.file);
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.clone().json();
+      await cache.put(new URL(url, self.registration.scope).href, res);
+      const map = String((data && data.muscle_map) || '').split('#')[0];
+      if (/^[\w.\-]+\.html$/i.test(map)) await cache.add(map);
+    }).map(job => job.catch(() => {})));
+  } catch (err) {}
+}
+
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(VERSION)
-      .then(cache => Promise.all(SHELL.map(u => cache.add(u).catch(() => {}))))
+      .then(cache => Promise.all(SHELL.map(u => cache.add(u).catch(() => {}))).then(() => cachePrograms(cache)))
       .then(() => self.skipWaiting())
   );
 });
@@ -52,7 +71,9 @@ async function networkFirst(request) {
   } catch (err) {
     live.catch(() => {});                          // already handled; avoid an unhandled rejection
     const hit = await cache.match(key) ||
-      (request.mode === 'navigate' ? await cache.match(new URL('./', self.registration.scope).href) : null);
+      // Opening the app itself falls back to the saved shell. A page inside a frame (the
+      // muscle map) must not, or the app would load inside its own Muscles tab.
+      (request.mode === 'navigate' && request.destination === 'document' ? await cache.match(new URL('./', self.registration.scope).href) : null);
     if (hit) return hit;
     return live;                                   // nothing cached yet: wait for the network
   }

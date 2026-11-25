@@ -272,7 +272,8 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .exercises-list { display: flex; flex-direction: column; gap: 10px; }
 .ex-card { scroll-margin: 96px 0 200px; transition: opacity .2s; }
 .ex-card.done .ex-name { color: var(--muted); }
-.ex-card.done:not(.expanded) { opacity: .62; }
+/* Dim the content, not the card: a see-through black card would turn lighter than the others. */
+.ex-card.done:not(.expanded) > .ex-row { opacity: .55; }
 
 .ex-row { display: flex; align-items: stretch; }
 .ex-check {
@@ -349,7 +350,7 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 /* Superset + special blocks */
 /* A superset / tri-set is one panel: a header, then its exercises as rows inside it. */
 .ss-card { scroll-margin: 96px 0 200px; transition: opacity .2s; }
-.ss-card.done:not(.expanded) { opacity: .62; }
+.ss-card.done:not(.expanded) > .ss-top { opacity: .55; }
 .ss-top {
   width: 100%; cursor: pointer; text-align: left; background: none; border: none; color: var(--text); font: inherit;
   display: flex; align-items: center; gap: 10px; padding: 12px 14px 10px 16px;
@@ -358,7 +359,6 @@ body.timer-on .screen { padding-bottom: calc(var(--nav-h) + var(--safe-bottom) +
 .ss-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
 .ss-card.expanded > .ss-top .ex-chev { transform: rotate(180deg); color: var(--magenta); }
 .ex-card.in-ss { border-top: 1px solid rgba(255,255,255,0.08); scroll-margin: 150px 0 200px; }
-.ex-card.in-ss.done:not(.expanded) { opacity: 1; }
 .ex-card.in-ss .ex-detail { border-top: none; padding-top: 0; }
 .ex-card.in-ss .ex-open { padding-right: 16px; }
 .ss-header, .special-header {

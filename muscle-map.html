@@ -93,6 +93,16 @@ th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-trans
 td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 td.n .sw { width: 9px; height: 9px; margin-right: 6px; }
 td.z { color: var(--mute); }
+/* Phone width: fit all the day columns without sideways scrolling. */
+@media (max-width: 560px) {
+  table { min-width: 0; font-size: 13px; }
+  th, td { padding: 7px 4px; }
+  th { font-size: 10px; letter-spacing: .04em; }
+  td.n .sw { width: 7px; height: 7px; margin-right: 3px; }
+  .panel.scroll { padding: 10px 8px; }
+  table.heads td:first-child { white-space: normal; width: 30%; }
+  table.heads .st { white-space: normal; }
+}
 td.tot { font-weight: 700; }
 tbody tr { cursor: pointer; }
 tbody tr.on td { background: #1f1a3a; }
