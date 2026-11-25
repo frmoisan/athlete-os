@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Muscle Map</title>
-<meta name="theme-color" content="#0c0a18">
+<meta name="theme-color" content="#15122a">
 <style>
 /* Same local font files as the app, so this page works offline. */
 @font-face { font-family: 'Chakra Petch'; font-weight: 400; font-style: normal; font-display: swap; src: url(fonts/chakra-petch-latin-400-normal.woff2) format('woff2'); }
@@ -15,8 +15,8 @@
   /* Layout: combined body map + readout first, then one small map per day, then the sets table.
      Single theme (Athlete OS neon noir). Day colours are the app's day accents. */
   color-scheme: dark;
-  --bg: #0c0a18;
-  --panel: #141126;
+  --bg: #15122a;
+  --panel: #000000;
   --line: #241f42;
   --body: #201c3a;
   --outline: #5d578c;
@@ -284,7 +284,7 @@ const MAPS = {
 const MAP = MAPS[(location.hash || "").slice(1)] || MAPS["4-2"];
 const DAYS = MAP.groups, MUSCLES = MAP.muscles;
 const HAS_SETS = MUSCLES.some(m => m.sets);
-const SURFACE = "#141126";
+const SURFACE = "#000000";
 const BY_ID = Object.fromEntries(MUSCLES.map(m => [m.id, m]));
 const dayColor = n => DAYS[n - 1].color;
 const daysOf = m => Object.keys(m.ex).map(Number).sort();
